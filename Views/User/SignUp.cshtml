@@ -1,0 +1,17 @@
+﻿@model EthioHomes.Models.User
+
+<h2>Sign Up</h2>
+<form method="post">
+    <label>Name:</label>
+    <input type="text" name="Name" required />
+    <label>Email:</label>
+    <input type="email" name="Email" required />
+    <label>Password:</label>
+    <input type="password" name="Password" required />
+    <label>User Type:</label>
+    <select name="UserType">
+        <option value="Owner">Owner</option>
+        <option value="Renter">Renter</option>
+    </select>
+    <button type="submit">Sign Up</button>
+</form>
