@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Session;
+
 namespace EthioHomes
 {
     public class Program
@@ -9,18 +11,29 @@ namespace EthioHomes
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // Add session services
+            builder.Services.AddDistributedMemoryCache(); // Use in-memory cache for session data
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout (optional)
+                options.Cookie.HttpOnly = true; // Make session cookie HttpOnly for security
+                options.Cookie.IsEssential = true; // Mark cookie as essential for the app
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            // Enable session middleware
+            app.UseSession();
 
             app.UseRouting();
 

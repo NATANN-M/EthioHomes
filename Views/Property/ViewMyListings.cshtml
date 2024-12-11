@@ -1,0 +1,34 @@
+﻿@model List<EthioHomes.Models.Property>
+
+<h2>My Listings</h2>
+
+@foreach (var property in Model)
+{
+    <div>
+        <h3>@property.Title</h3>
+        <p>@property.Location</p>
+        <p>Price: @property.Price</p>
+        <p>Status: @property.Status</p>
+        <p>@property.Description</p>
+
+        <!-- Display property images -->
+        <div>
+            @if (property.ImagePaths.Count > 0)
+            {
+                foreach (var imagePath in property.ImagePaths)
+                {
+                    <img src="/uploads/@imagePath" alt="Property Image" style="width:200px;height:auto;" />
+                }
+            }
+            else
+            {
+                <p>No images available</p>
+            }
+        </div>
+
+        <!-- Actions -->
+        <a asp-action="EditProperty" asp-route-id="@property.Id">Edit</a> |
+        <a asp-action="DeleteProperty" asp-route-id="@property.Id">Delete</a> |
+        <a asp-action="ViewMessages" asp-route-id="@property.Id">Messages</a>
+    </div>
+}

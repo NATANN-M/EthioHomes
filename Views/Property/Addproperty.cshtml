@@ -1,40 +1,40 @@
 ﻿@model EthioHomes.Models.Property
 
-<h2>List Your Property</h2>
+<h2>Add Property</h2>
 
-<form method="post" enctype="multipart/form-data" asp-action="SubmitProperty">
-    <label>Title</label>
+<form method="post" enctype="multipart/form-data" asp-action="AddProperty">
+    <label>Title:</label>
     <input type="text" name="Title" required />
 
-    <label>Location</label>
+    <label>Location:</label>
     <input type="text" name="Location" required />
 
-    <label>Price</label>
-    <input type="number" name="Price" required />
+    <label>Price:</label>
+    <input type="number" name="Price" step="0.01" required />
 
-    <label>Property Type</label>
+    <label>Property Type:</label>
     <select name="PropertyType">
         <option value="Residential">Residential</option>
         <option value="Commercial">Commercial</option>
     </select>
 
-    <label>Status</label>
+    <label>Status:</label>
     <select name="Status">
         <option value="Available">Available</option>
         <option value="Sold">Sold</option>
     </select>
 
-    <label>Bedrooms</label>
+    <label>Bedrooms:</label>
     <input type="number" name="Bedrooms" required />
 
-    <label>Bathrooms</label>
+    <label>Bathrooms:</label>
     <input type="number" name="Bathrooms" required />
 
-    <label>Description</label>
+    <label>Description:</label>
     <textarea name="Description"></textarea>
 
-    <label>Upload Images</label>
-    <input type="file" name="images" multiple />
+    <label>Upload Images:</label>
+    <input type="file" name="images" multiple /> <!-- Allows multiple files -->
 
-    <button type="submit">Submit</button>
+    <button type="submit">Add Property</button>
 </form>
