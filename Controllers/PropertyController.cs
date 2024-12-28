@@ -24,13 +24,13 @@ namespace EthioHomes.Controllers
             return View();
         }
 
-        [HttpPost]
+       
         [HttpPost]
         public IActionResult AddProperty(Property property, List<IFormFile> images)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
 
-            // Redirect to login if the user is not logged in
+            // user is not logged in
             if (userId == null)
             {
                 return RedirectToAction("Login", "User");
@@ -60,7 +60,7 @@ namespace EthioHomes.Controllers
                 cmd.Parameters.AddWithValue("@Description", property.Description);
                 cmd.Parameters.AddWithValue("@OwnerId", property.OwnerId);
 
-                int propertyId = Convert.ToInt32(cmd.ExecuteScalar()); // Get the newly inserted property ID
+                int propertyId = Convert.ToInt32(cmd.ExecuteScalar()); // Get  inserted property ID
 
                 // Save uploaded images
                 foreach (var image in images)
@@ -84,7 +84,7 @@ namespace EthioHomes.Controllers
 
                         SqlCommand imgCmd = new SqlCommand(insertImageQuery, conn);
                         imgCmd.Parameters.AddWithValue("@PropertyId", propertyId);
-                        imgCmd.Parameters.AddWithValue("@ImagePath", fileName); // Save only the file name
+                        imgCmd.Parameters.AddWithValue("@ImagePath", fileName); //  file name
                         imgCmd.ExecuteNonQuery();
                     }
                 }
@@ -93,6 +93,62 @@ namespace EthioHomes.Controllers
 
             return RedirectToAction("ViewMyListings", "Property");
         }
+
+        ///////////********* FOR Detail page "clicking the Details or View more  button" *************///////  ///////
+        public IActionResult Details(int id)
+        {
+            Property property = null;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+               
+                string query = "SELECT * FROM Properties WHERE Id = @Id";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    property = new Property
+                    {
+                        Id = Convert.ToInt32(reader["Id"]),
+                        Title = reader["Title"].ToString(),
+                        Location = reader["Location"].ToString(),
+                        Price = Convert.ToDecimal(reader["Price"]),
+                        PropertyType = reader["PropertyType"].ToString(),
+                        Status = reader["Status"].ToString(),
+                        Bedrooms = Convert.ToInt32(reader["Bedrooms"]),
+                        Bathrooms = Convert.ToInt32(reader["Bathrooms"]),
+                        Description = reader["Description"].ToString()
+                    };
+                }
+                reader.Close();
+
+                // associated images
+                if (property != null)
+                {
+                    string imageQuery = "SELECT * FROM PropertyImages WHERE PropertyId = @PropertyId";
+                    SqlCommand imgCmd = new SqlCommand(imageQuery, conn);
+                    imgCmd.Parameters.AddWithValue("@PropertyId", property.Id);
+
+                    SqlDataReader imgReader = imgCmd.ExecuteReader();
+                    while (imgReader.Read())
+                    {
+                        property.Images.Add(new PropertyImage
+                        {
+                            Id = Convert.ToInt32(imgReader["Id"]),
+                            PropertyId = property.Id,
+                            ImagePath = imgReader["ImagePath"].ToString()
+                        });
+                    }
+                }
+            }
+
+            return property != null ? View(property) : NotFound();
+        }
+
 
 
     }

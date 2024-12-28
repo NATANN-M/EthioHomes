@@ -1,0 +1,42 @@
+﻿@model EthioHomes.Models.Property
+
+<h2>@Model.Title</h2>
+
+<!-- Display images -->
+
+<div >
+    <h3>Images</h3>
+    @if (Model.Images.Count > 0)
+    {
+        @foreach (var image in Model.Images)
+        {
+            <img src="/uploads/@image.ImagePath" alt="Property Image" style="width:200px; height:auto; margin:10px;" />
+        }
+    }
+    else
+    {
+        <p>No images available</p>
+    }
+</div>
+
+<p><strong>Location:</strong> @Model.Location</p>
+<p><strong>Price:</strong> @Model.Price</p>
+<p><strong>Type:</strong> @Model.PropertyType</p>
+<p><strong>Status:</strong> @Model.Status</p>
+<p><strong>Bedrooms:</strong> @Model.Bedrooms</p>
+<p><strong>Bathrooms:</strong> @Model.Bathrooms</p>
+<p><strong>Description:</strong> @Model.Description</p>
+
+
+
+
+<!-- Actions -->
+<div>
+    <a href="/Messages/ViewMessages?propertyId=@Model.Id" class="btn btn-primary">Contact Owner</a>
+    <form asp-action="SaveProperty" asp-route-id="@Model.Id" method="post" style="display:inline;">
+        <button type="submit" class="btn btn-success">Save</button>
+    </form>
+    <form asp-action="BookProperty" asp-route-id="@Model.Id" method="post" style="display:inline;">
+        <button type="submit" class="btn btn-warning">Book</button>
+    </form>
+</div>

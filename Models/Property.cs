@@ -14,6 +14,7 @@
         public int OwnerId { get; set; } // Foreign key to Users table
 
         // List of associated image paths
+        public List<PropertyImage> Images { get; set; } = new List<PropertyImage>();
         public List<string> ImagePaths { get; set; }
     }
 }

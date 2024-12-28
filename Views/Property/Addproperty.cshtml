@@ -1,40 +1,112 @@
 ﻿@model EthioHomes.Models.Property
 
-<h2>Add Property</h2>
 
-<form method="post" enctype="multipart/form-data" asp-action="AddProperty">
-    <label>Title:</label>
-    <input type="text" name="Title" required />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Your Property</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1><em>EthioHomes</em></h1>
+            </div>
+            <nav class="nav">
+                <a href="#">Home</a>
+                <a href="#">Contact</a>
+                <a href="#">Services</a>
+                <a href="#">Testimonials</a>
+                <a href="#">logout</a>
+                <a><img src="/images/image.png" alt="" href="#profile"> </a>
+            </nav>
+        </div>
+    </header>
 
-    <label>Location:</label>
-    <input type="text" name="Location" required />
+    <main>
+        <section class="hero">
+            <h1>The perfect place for Rent And Sell Property</h1>
+        </section>
 
-    <label>Price:</label>
-    <input type="number" name="Price" step="0.01" required />
+        <section class="property-form">
+            <h2>List Your Property</h2>
 
-    <label>Property Type:</label>
-    <select name="PropertyType">
+
+
+            <form id="property-listing-form" method="post" enctype="multipart/form-data" asp-action="AddProperty">
+               
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input id="title" type="text" name="Title" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input id="location" type="text" name="Location" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input id ="price" type="number" name="Price" step="0.01" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="property-type">Property Type</label>
+                        <select id="property-type" name="PropertyType">
         <option value="Residential">Residential</option>
         <option value="Commercial">Commercial</option>
     </select>
+                    </div>
+   
+                    <div class="form-group">
+                        <label for="status">Status</label>
 
-    <label>Status:</label>
-    <select name="Status">
+                        <select id="status" name="Status">
         <option value="Available">Available</option>
         <option value="Sold">Sold</option>
     </select>
+                    </div>
 
-    <label>Bedrooms:</label>
-    <input type="number" name="Bedrooms" required />
+                    <div class="form-group">
+                        <label for="bedrooms">Bedrooms</label>
+                        <input id="bedrooms" type="number" name="Bedrooms" required />
+                    </div>
 
-    <label>Bathrooms:</label>
-    <input type="number" name="Bathrooms" required />
 
-    <label>Description:</label>
-    <textarea name="Description"></textarea>
+                    <div class="form-group">
+                        <label for="bathrooms">Bathrooms</label>
+                        <input id="bathrooms" type="number" name="Bathrooms" required />
+                    </div>
 
-    <label>Upload Images:</label>
-    <input type="file" name="images" multiple /> <!-- Allows multiple files -->
 
-    <button type="submit">Add Property</button>
+                    <div class="form-group full">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="5" name="Description"></textarea>
+                        </div>
+
+                    <div class="form-group full">
+                        <label for="images" class="drop-container" id="dropcontainer">
+                            <span class="drop-title">Drop files here</span>
+                            or
+                            <input name="images" type="file" id="images"  multiple required>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit">Publish Listing</button>
+                    <button type="button" class="secondary">Cancel</button>
+                </div>
 </form>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-info">
+                <p>EthioHomes &copy; 2024. All Rights Reserved</p>
+                <p> Addis Ababa, Ethiopia, ZIPcode 1000 | Phone:+251945862215 </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

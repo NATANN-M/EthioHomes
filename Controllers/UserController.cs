@@ -11,13 +11,15 @@ namespace EthioHomes.Controllers
         private readonly string connectionString =
             "Server=(localdb)\\MSSQLLocalDB;Database=EthioHomesDB;Trusted_Connection=True;";
 
-        // Show the Sign-Up form
+
+
         public IActionResult SignUp()
         {
             return View();
         }
 
-        // Handle Sign-Up 
+        
+
         [HttpPost]
         public IActionResult SignUp(User user)
         {
@@ -36,11 +38,13 @@ namespace EthioHomes.Controllers
             return RedirectToAction("Login");
         }
 
-        // Show the Login form
+      
         public IActionResult Login()
         {
             return View(); // Show login form
         }
+
+
 
         [HttpPost]
         public IActionResult Login(string email, string password)
@@ -49,7 +53,10 @@ namespace EthioHomes.Controllers
             {
                 conn.Open();
 
-                // Check user credentials
+
+
+                // Check 
+
                 string query = "SELECT * FROM Users WHERE Email = @Email AND Password = @Password";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@Email", email);

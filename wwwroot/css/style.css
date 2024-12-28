@@ -1,0 +1,33 @@
+body{
+    background-image: url('/images/slide3.jpg');
+    background: center;
+}
+.flex {
+    display: flex;
+    background: url('/images/slide3.jpg');
+}
+.left_flex{
+    width: 70%;
+}
+.w-40{
+    width: 40%;
+}
+.right_flex_text input {
+    padding-bottom: 0;
+}
+.bd-filter{
+    backdrop-filter: blur(50px);
+}
+.form-label{
+    margin-bottom: 0;
+    color: white;
+}
+hr{
+    margin-top: 3rem;
+    width: 20%;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+    border-top: dotted;
+    border-radius: 50%;
+}

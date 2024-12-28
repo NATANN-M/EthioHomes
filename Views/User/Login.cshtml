@@ -1,11 +1,68 @@
-﻿@model EthioHomes.Models.User
-<h2>Login</h2>
-<form method="post">
-    <label>Email:</label>
-    <input type="email" name="email" required />
-    <label>Password:</label>
-    <input type="password" name="password" required />
-    <button type="submit">Login</button>
-</form>
-<p>@ViewBag.Message</p>
- 
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+@model EthioHomes.Models.User
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="~/css/style.css" />
+    <title>Login</title>
+</head>
+<body class="p-4">
+    <div class="flex container-fluid container mt-5 rounded-4 py-5 text-white">
+        <div class="left_flex mt-2 ms-5">
+            <header><h1 class="text-center">Ethio Homes</h1></header>
+            <hr />
+            <div class="left_flex_text">
+                <h1 class="mb-3">Login <br /></h1>
+                <h6 class="mb-3">
+                    Don't Have an Account? <a href="User/SignUp.cshtml">Sign up</a>
+                </h6>
+                <hr class="rounded-4" />
+                <div class="w-75 mb-4">
+                    <h5>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+                        in consequatur quis optio deserunt totam, sint voluptatum iusto?
+                    </h5>
+                </div>
+                <button class="btn btn-dark rounded-5 mt-2">Learn More</button>
+            </div>
+        </div>
+        <div class="right_flex w-40 mt-4">
+            <div class="right_flex_text mt-2">
+                <!-- Login form -->
+                <form asp-action="Login" method="POST" class="bd-filter px-5 py-3 rounded-5">
+                    <h1 class="text-center text-white">Sign in</h1>
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="custom-email form-control rounded-4" required />
+                    <br />
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="custom-password form-control rounded-4" required />
+                    <br />
+                    <div class="text-center mt-4">
+                        <button class="custom-button btn btn-primary" type="submit">Login</button>
+                    </div>
+                </form>
+
+                <!-- Error message if login fails -->
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger mt-3">
+                        <p>@ViewBag.ErrorMessage</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    @* <script src="~/js/script2.js"></script> *@
+</body>
+</html>

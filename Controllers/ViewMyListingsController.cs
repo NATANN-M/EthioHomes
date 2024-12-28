@@ -18,12 +18,14 @@ public class PropertyController : Controller
         {
             conn.Open();
 
-            // Get properties owned by the logged-in user
+            // properties owned by the logged-in user
+
             string propertyQuery = "SELECT * FROM Properties WHERE OwnerId = @OwnerId";
             SqlCommand propertyCmd = new SqlCommand(propertyQuery, conn);
             propertyCmd.Parameters.AddWithValue("@OwnerId", userId);
 
             SqlDataReader propertyReader = propertyCmd.ExecuteReader();
+
             List<Property> properties = new List<Property>();
 
             while (propertyReader.Read())
@@ -44,7 +46,7 @@ public class PropertyController : Controller
             }
             propertyReader.Close();
 
-            // Get images for each property
+            //  images for each property
             foreach (var property in properties)
             {
                 string imageQuery = "SELECT ImagePath FROM PropertyImages WHERE PropertyId = @PropertyId";

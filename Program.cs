@@ -30,10 +30,16 @@ namespace EthioHomes
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+           
+            app.UseStaticFiles(); //for using static files located inside WWWroot folder
 
             // Enable session middleware
+
+            builder.Services.AddSession();
+
             app.UseSession();
+
+           
 
             app.UseRouting();
 

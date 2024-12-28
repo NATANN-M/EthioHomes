@@ -1,0 +1,28 @@
+﻿@model List<EthioHomes.Models.Message>
+@{
+    ViewBag.Title = "Messages";
+    int userId = (int)ViewBag.UserId;
+}
+
+<h2>Messages</h2>
+<div class="message-thread">
+    @foreach (var message in Model)
+    {
+        <div class="message @(message.SenderId == userId ? "sent" : "received")">
+            <p>
+                <strong>@(message.SenderId == userId ? "You" : "Other"):</strong>
+                @message.Content
+            </p>
+            <p><small>@message.SentDate</small></p>
+        </div>
+    }
+</div>
+
+<form asp-action="SendMessage" method="post">
+    <input type="hidden" name="propertyId" value="@ViewBag.PropertyId" />
+    <input type="hidden" name="receiverId" value="@ViewBag.ReceiverId" />
+    <textarea name="content" placeholder="Type your message here" required></textarea>
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>
+
+

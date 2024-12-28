@@ -1,7 +1,9 @@
 ﻿@model List<EthioHomes.Models.Property>
-
+ 
 <h2>My Listings</h2>
 
+
+ 
 @foreach (var property in Model)
 {
     <div>
@@ -27,8 +29,13 @@
         </div>
 
         <!-- Actions -->
-        <a asp-action="EditProperty" asp-route-id="@property.Id">Edit</a> |
-        <a asp-action="DeleteProperty" asp-route-id="@property.Id">Delete</a> |
-        <a asp-action="ViewMessages" asp-route-id="@property.Id">Messages</a>
+        <a href="/ManageProperty/EditProperty/@property.Id" class="btn btn-primary">Edit</a>
+
+        <!-- Delete Button -->
+        <form action="/ManageProperty/DeleteProperty/@property.Id" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+
+
     </div>
 }

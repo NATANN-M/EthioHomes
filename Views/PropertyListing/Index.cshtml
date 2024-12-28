@@ -1,0 +1,63 @@
+﻿@model List<EthioHomes.Models.Property>
+
+<h2>Available Properties</h2>
+
+<!-- Search Form -->
+<form method="get" asp-action="Index">
+    <div>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" placeholder="Enter location" />
+    </div>
+    <div>
+        <label for="propertyType">Property Type:</label>
+        <select id="propertyType" name="propertyType">
+            <option value="">All</option>
+            <option value="Apartment">Apartment</option>
+            <option value="House">House</option>
+            <option value="Condo">Condo</option>
+        </select>
+    </div>
+    <div>
+        <label for="maxPrice">Max Price:</label>
+        <input type="number" id="maxPrice" name="maxPrice" placeholder="Enter max price" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<hr />
+
+<!-- Property Listings -->
+@if (Model.Count > 0)
+{
+    @foreach (var property in Model)
+    {
+        <div class="property-card">
+            <h3>@property.Title</h3>
+            <p>Location: @property.Location</p>
+            <p>Price: @property.Price</p>
+            <p>Type: @property.PropertyType</p>
+            <p>@property.Description</p>
+
+            <!-- Display property images -->
+            <div>
+                @if (property.Images.Count > 0)
+                {
+                    @foreach (var image in property.Images)
+                    {
+                        <img src="/uploads/@image.ImagePath" alt="Property Image" style="width:200px; height:auto;" />
+                    }
+                }
+                else
+                {
+                    <p>No images available</p>
+                }
+            </div>
+
+            <a href="/Property/Details/@property.Id" class="btn btn-info">View Details</a>
+        </div>
+    }
+}
+else
+{
+    <p>No properties found .</p>
+}

@@ -2,8 +2,292 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <h1>Log in successfull!!</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@model EthioHomes.Models.User
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   
+    <title>EthioHomes - Home</title>
+
+
+
+
+    <!-- Custom CSS Files -->
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/colors.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Bootstrap (Local Copy) -->
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true">
+
+    <!-- Owl Carousel -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+</head>
+
+<body>
+
+    <a href="/Messages/ViewMessages" class="btn btn-secondary">Messages</a>
+
+    <!-- NAVBAR -->
+    <nav id="navbar" class="navbar navbar-expand-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <h1 style="color: white;"><em>Ethio Homes</em></h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
+                <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-main">
+                <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/User/Login">Log in</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">Testimonials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CAROUSEL IMAGES -->
+    <section class="banner">
+        <div class="owl-carousel owl-theme carousel-sliders">
+            <div class="item" style="background-image: url('/images/slide3.jpg');">
+                <div class="overlay-bg cover-full"></div>
+                <div class="container">
+                    <div class="caption">
+                        <h1 class="caption-heading">The perfect place for your Needs</h1>
+                        <a href="#" class="btn btn-secondary">View more</a>
+                    </div>
+                </div>
+            </div>
+            <div class="item" style="background-image: url('/images/slide2.jpg');">
+                <div class="overlay-bg cover-full"></div>
+                <div class="container">
+                    <div class="caption">
+                        <h1 class="caption-heading">The perfect place for your Needs</h1>
+                        <a href="#" class="btn btn-secondary">View more</a>
+                    </div>
+                </div>
+            </div>
+            <div class="item" style="background-image: url('/images/slide3.jpg');">
+                <div class="overlay-bg cover-full"></div>
+                <div class="container">
+                    <div class="caption">
+                        <h1 class="caption-heading">The perfect place for your Needs</h1>
+                        <a href="#" class="btn btn-secondary">View more</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="custom-nav owl-nav"></div>
+    </section>
+
+    <!-- WELCOME CONTENT -->
+    <section id="about" class="about">
+        <div class="container pt-5 pb-5">
+            <h1 class="section-title">About Us</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="about-content">
+                        <p>
+                            We simplify real estate selling, and renting. Join Ethio Homes for a new era of convenient and transparent property management.
+                        </p>
+                        <img class="w-100 p-3" src="../images/about.jpg" alt="About Us">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="about-content">
+                        <ul>
+                            <li>
+                                <i class="fas fa-trophy"></i>
+                                <h4>Comfortable</h4>
+                                <p>Ethio Homes provides a comfortable real estate experience with its intuitive interface, extensive property listings, and secure online tools. Easily browse, negotiate, and finalize transactions all in one place, ensuring a stress-free process for buyers, sellers, and tenants.</p>
+                            </li>
+                            <li>
+                                <i class="fas fa-bullhorn"></i>
+                                <h4>Efficiency</h4>
+                                <p>Ethio Homes enhances efficiency in real estate transactions with its streamlined processes. From listing properties to finalizing agreements, our platform reduces time and effort, making the buying, selling, and renting experience faster and more straightforward for all users.</p>
+                            </li>
+                            <li>
+                                <i class="fas fa-user-shield"></i>
+                                <h4>Distribution</h4>
+                                <p>Ethio Homes connects buyers, sellers, and renters from different locations, providing extensive reach and visibility for all properties. This comprehensive network facilitates efficient and effective real estate transactions nationwide.</p>
+                            </li>
+                            <li>
+                                <i class="fas fa-id-card-alt"></i>
+                                <h4>Transparency</h4>
+                                <p>Prioritizes transparency in all interactions. Detailed property descriptions, clear pricing information, and secure online agreements ensure that buyers, sellers, and tenants have all the information they need to make informed decisions confidently.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <!-- <section id="services" class="services">  -->
+
+        <!--propertyListing-->
+
+    <section src="PropertyListing/Index.cshtml">
+
+
+        
+
+    </section>
+
+
+
+        <div class="row">
+            <div class="col-md-6 box-image">
+                <div class="image cover-full transition" style="background-image: url('../images/service2.jpg');"></div>
+                <div class="shadow cover-full transition"></div>
+                <div class="desc center">
+                    <h4>Rentals</h4>
+                    <a href="#" class="btn-secondary">View more</a>
+                </div>
+            </div>
+            <div class="col-md-6 box-image">
+                <div class="image cover-full transition" style="background-image: url('../images/service3.jpg');"></div>
+                <div class="shadow cover-full transition"></div>
+                <div class="desc center">
+                    <h4>For Sale</h4>
+                    <a href="#" class="btn-secondary">View more</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="projects">
+        <div class="container pt-5 pb-5">
+            <h1 class="section-title">Locations</h1>
+            <div class="row">
+                <div class="col-md-4 col-6">
+                    <div class="box-image">
+                        <div class="image cover-full transition" style="background-image: url('../images/pro1.jpg');"></div>
+                        <div class="shadow cover-full transition"></div>
+                        <div class="desc center">
+                            <h4>Addis Ababa</h4>
+                            <a href="#">View more</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="box-image">
+                        <div class="image cover-full transition" style="background-image: url('../images/pro2.jpg');"></div>
+                        <div class="shadow cover-full transition"></div>
+                        <div class="desc center">
+                            <h4>Hawassa</h4>
+                            <a href="#">View more</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="box-image">
+                        <div class="image cover-full transition" style="background-image: url('../images/pro3.jpg');"></div>
+                        <div class="shadow cover-full transition"></div>
+                        <div class="desc center">
+                            <h4>Dire Dawa</h4>
+                            <a href="#">View more</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="box-image">
+                        <div class="image cover-full transition" style="background-image: url('../images/pro4.jpg');"></div>
+                        <div class="shadow cover-full transition"></div>
+                        <div class="desc center">
+                            <h4>Gonder</h4>
+                            <a href="#">View more</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="box-image">
+                        <div class="image cover-full transition" style="background-image: url('../images/pro5.jpg');"></div>
+                        <div class="shadow cover-full transition"></div>
+                        <div class="desc center">
+                            <h4>Nazret</h4>
+                            <a href="#">View more</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="box-image">
+                        <div class="image cover-full transition" style="background-image: url('../images/pro6.jpg');"></div>
+                        <div class="shadow cover-full transition"></div>
+                        <div class="desc center">
+                            <h4>Browse Your Own Location</h4>
+                            <a href="#">View more</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer footer1">
+        <div class="container pt-5 pb-5">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="footer-logo">
+                        <h3 class="text-white">Ethio Homes</h3>
+                        <p>For reliable homes. We bring homes closer to you.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i> Addis Ababa, Ethiopia
+                        </li>
+                        <li>
+                            <i class="fas fa-phone"></i> 123-456-789
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i> contact@ethiohomes.com
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h4>Follow Us</h4>
+                    <ul>
+                        <li><a href="#" class="btn-secondary"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#" class="btn-secondary"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#" class="btn-secondary"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="../lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Owl Carousel JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <script>
+      
+    </script>
+</body>
+</html>
