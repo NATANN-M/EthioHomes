@@ -15,6 +15,19 @@ namespace EthioHomes.Controllers
 
         public IActionResult Index()
         {
+            var userType = HttpContext.Session.GetString("UserType");
+
+            if (userType == null)
+            {
+                // Pass userType to the view only if the user is logged in
+                Console.WriteLine("empty fdgghh");
+            }
+            else
+            {
+
+                ViewBag.UserType = userType;
+            }
+
             return View();
         }
 

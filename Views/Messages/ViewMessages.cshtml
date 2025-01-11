@@ -2,9 +2,85 @@
 @{
     ViewBag.Title = "Messages";
     int userId = (int)ViewBag.UserId;
+    string Reciver = (ViewBag.ReceiverId).ToString();
+    string Sender = (ViewBag.UserId).ToString();
+    
+    ViewBag.UserId
+ = userId;
 }
+<nav id="navbar" class="navbar navbar-expand-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <h1 style="color: white;"><em>Ethio Homes</em></h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
+            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-main">
+            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#services">Services</a>
+                </li>
 
-<h2>Messages</h2>
+                <!-- Check if the user is logged in -->
+                @if (ViewBag.UserType != null)
+                {
+                 
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                            Profile
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" href="/User/Profile">View Profile</a></li>
+                            <li><a class="dropdown-item" href="/User/Message">Messages</a></li>
+                            <li>
+                                <a asp-action="MySavedProperties" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MySavedProperties">Saved Properties</a>
+                            </li>
+                            <li>
+                                <a asp-action="MyBookings" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MyBookings">Bookings</a>
+                            </li>
+                            
+
+                            @if (ViewBag.UserType == "Owner")
+                            {
+                                <li><a class="dropdown-item" href="/Property/AddProperty">Add Property</a></li>
+                                <li><a class="dropdown-item" href="/Property/ViewMyListings">View My Listings</a></li>
+                            }
+
+                            <li><a class="dropdown-item" href="/User/Logout">Log Out</a></li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/User/Login">Log in</a>
+                    </li>
+                }
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#testimonials">Testimonials</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<h2>Messages for Property @ViewBag.PropertyId</h2>
+<h2>Datas:
+    @ViewBag.ReceiverId = receiverId;<br>
+    @ViewBag.UserId = userId;
+</h2>
+
+<!-- Display messages -->
 <div class="message-thread">
     @foreach (var message in Model)
     {
@@ -18,7 +94,8 @@
     }
 </div>
 
-<form asp-action="SendMessage" method="post">
+<h3>Send a New Message</h3>
+<form action="@Url.Action("SendMessage", "Messages")" method="post">
     <input type="hidden" name="propertyId" value="@ViewBag.PropertyId" />
     <input type="hidden" name="receiverId" value="@ViewBag.ReceiverId" />
     <textarea name="content" placeholder="Type your message here" required></textarea>
@@ -26,3 +103,28 @@
 </form>
 
 
+
+
+ 
+<style>
+    .message-thread {
+        border: 1px solid #ccc;
+        padding: 15px;
+        max-height: 400px;
+        overflow-y: scroll;
+    }
+
+    .message {
+        margin-bottom: 10px;
+    }
+
+    .message.sent {
+        text-align: right;
+        color: blue;
+    }
+
+    .message.received {
+        text-align: left;
+        color: green;
+    }
+</style>

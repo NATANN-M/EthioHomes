@@ -1,0 +1,22 @@
+﻿@model List<EthioHomes.Models.Property>
+<h2>Saved Properties</h2>
+
+@if (!Model.Any())
+{
+    <p>You have no saved properties.</p>
+}
+else
+{
+    foreach (var property in Model)
+    {
+        <div class="property-card">
+            <h3>@property.Title</h3>
+            <p><strong>Price:</strong> @property.Price</p>
+            <p><strong>Location:</strong> @property.Location</p>
+            <a asp-action="Details" asp-route-id="@property.Id" class="btn btn-primary">View Details</a>
+            <form asp-action="RemoveSavedProperty" asp-route-id="@property.Id" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger">Remove</button>
+            </form>
+        </div>
+    }
+}

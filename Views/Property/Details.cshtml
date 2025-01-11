@@ -33,10 +33,15 @@
 <!-- Actions -->
 <div>
     <a href="/Messages/ViewMessages?propertyId=@Model.Id" class="btn btn-primary">Contact Owner</a>
-    <form asp-action="SaveProperty" asp-route-id="@Model.Id" method="post" style="display:inline;">
-        <button type="submit" class="btn btn-success">Save</button>
+
+    <form action="@Url.Action("SaveProperty", "PropertyActions")" method="post">
+        <input type="hidden" name="propertyId" value="@Model.Id" />
+        <button type="submit" class="btn btn-success">Save Property</button>
     </form>
-    <form asp-action="BookProperty" asp-route-id="@Model.Id" method="post" style="display:inline;">
-        <button type="submit" class="btn btn-warning">Book</button>
+
+    <form action="@Url.Action("BookProperty", "PropertyActions")" method="post">
+        <input type="hidden" name="propertyId" value="@Model.Id" />
+        <button type="submit" class="btn btn-warning">Book Property</button>
     </form>
+
 </div>

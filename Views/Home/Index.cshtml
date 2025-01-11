@@ -1,6 +1,15 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@{
+    var userType = ViewBag.UserType;
+    
+}
+
+@{
+    var loginSuccessMessage = TempData["LoginSuccess"] as string;
+    var showLogoutConfirm = TempData["ShowLogoutConfirm"] as bool? ?? false;
+}
 
 @model EthioHomes.Models.User
 
@@ -15,26 +24,31 @@
 
     <!-- Custom CSS Files -->
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
-    <link rel="stylesheet" href="~/css/colors.css" asp-append-version="true">
-    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true">
+    <link rel="stylesheet" href="/css/colors.css" asp-append-version="true">
+    <link rel="stylesheet" href="/css/responsive.css" asp-append-version="true">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!-- Bootstrap (Local Copy) -->
-    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
 
-    <!-- Owl Carousel -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+
+    @* <!-- Owl Carousel --> *@
+    @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"> *@
+    @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"> *@
+
+    <!-- Owl Carousel (Local Copy) -->
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
 </head>
 
 <body>
 
-    <a href="/Messages/ViewMessages" class="btn btn-secondary">Messages</a>
+    
 
     <!-- NAVBAR -->
-    <nav id="navbar" class="navbar navbar-expand-sm">
+  <!--  <nav id="navbar" class="navbar navbar-expand-sm">
         <div class="container">
             <a class="navbar-brand" href="#">
                 <h1 style="color: white;"><em>Ethio Homes</em></h1>
@@ -62,7 +76,139 @@
                 </ul>
             </div>
         </div>
-    </nav>
+    </nav>   
+    -->
+    <nav id="navbar" class="navbar navbar-expand-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <h1 style="color: white;"><em>Ethio Homes</em></h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
+            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-main">
+            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#services">Services</a>
+                </li>
+
+                <!-- Check if the user is logged in -->
+                @if (ViewBag.UserType != null)
+                {
+                    <!-- Display profile picture and menu options based on UserType -->
+                    @* <li class="nav-item"> *@
+                    @*     <a class="nav-link" href="#profile"> *@
+                    @*         <img src="path/to/profile-pic.jpg" alt="Profile Picture" class="rounded-circle" width="20" height="20"> *@
+                    @*     </a> *@
+                    @* </li> *@
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                            Profile
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" href="/User/Profile">View Profile</a></li>
+                            <li><a class="dropdown-item" href="/User/Message">Messages</a></li>
+                                <li>
+                                    <a asp-action="MySavedProperties" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MySavedProperties">Saved Properties</a>
+                                </li>
+                                <li>
+                                    <a asp-action="MyBookings" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MyBookings">Bookings</a>
+                                </li>
+                            <!-- Conditional menu items based on UserType -->
+                            @if (ViewBag.UserType == "Owner")
+                            {
+                                <li><a class="dropdown-item" href="/Property/AddProperty">Add Property</a></li>
+                                <li><a class="dropdown-item" href="/Property/ViewMyListings">View My Listings</a></li>
+                            }
+
+                            <li><a class="dropdown-item" href="/User/Logout">Log Out</a></li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <!-- If the user is not logged in, show the login link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/User/Login">Log in</a>
+                    </li>
+                }
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#testimonials">Testimonials</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+    
+
+    <!-- Login Success Modal -->
+    @if (!string.IsNullOrEmpty(loginSuccessMessage))
+    {
+        <div class="modal fade" id="loginSuccessModal" tabindex="-1" aria-labelledby="loginSuccessModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginSuccessModalLabel">Login Successful</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @loginSuccessMessage
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var loginModal = new bootstrap.Modal(document.getElementById('loginSuccessModal'));
+            loginModal.show();
+        </script>
+    }
+
+    <!-- Logout Confirmation Modal -->
+    @if (showLogoutConfirm)
+    {
+        <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="logoutConfirmModalLabel">Are you sure you want to log out?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a href="/User/Logout" class="btn btn-primary">Yes, Log out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var logoutModal = new bootstrap.Modal(document.getElementById('logoutConfirmModal'));
+            logoutModal.show();
+        </script>
+    }
+
+ 
+   
+
+
 
     <!-- CAROUSEL IMAGES -->
     <section class="banner">
@@ -72,7 +218,7 @@
                 <div class="container">
                     <div class="caption">
                         <h1 class="caption-heading">The perfect place for your Needs</h1>
-                        <a href="#" class="btn btn-secondary">View more</a>
+                        <a href="PropertyListing/Index" class="btn btn-secondary">View more</a>
                     </div>
                 </div>
             </div>
@@ -108,7 +254,7 @@
                         <p>
                             We simplify real estate selling, and renting. Join Ethio Homes for a new era of convenient and transparent property management.
                         </p>
-                        <img class="w-100 p-3" src="../images/about.jpg" alt="About Us">
+                        <img class="w-100 p-3" src="/images/about.jpg" alt="About Us">
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -148,7 +294,7 @@
 
     <section src="PropertyListing/Index.cshtml">
 
-
+        <iframe src="PropertyListing/Index.cshtml"></iframe>
         
 
     </section>
@@ -175,15 +321,15 @@
         </div>
     </section>
 
-    <!-- PROJECTS -->
     <section id="projects" class="projects">
         <div class="container pt-5 pb-5">
             <h1 class="section-title">Locations</h1>
             <div class="row">
+                <!-- Project Cards -->
                 <div class="col-md-4 col-6">
                     <div class="box-image">
-                        <div class="image cover-full transition" style="background-image: url('../images/pro1.jpg');"></div>
-                        <div class="shadow cover-full transition"></div>
+                        <div class="image cover-full" style="background-image: url('/images/pro1.jpg');"></div>
+                        <div class="shadow cover-full"></div>
                         <div class="desc center">
                             <h4>Addis Ababa</h4>
                             <a href="#">View more</a>
@@ -192,8 +338,8 @@
                 </div>
                 <div class="col-md-4 col-6">
                     <div class="box-image">
-                        <div class="image cover-full transition" style="background-image: url('../images/pro2.jpg');"></div>
-                        <div class="shadow cover-full transition"></div>
+                        <div class="image cover-full" style="background-image: url('/images/pro2.jpg');"></div>
+                        <div class="shadow cover-full"></div>
                         <div class="desc center">
                             <h4>Hawassa</h4>
                             <a href="#">View more</a>
@@ -202,8 +348,8 @@
                 </div>
                 <div class="col-md-4 col-6">
                     <div class="box-image">
-                        <div class="image cover-full transition" style="background-image: url('../images/pro3.jpg');"></div>
-                        <div class="shadow cover-full transition"></div>
+                        <div class="image cover-full" style="background-image: url('/images/pro3.jpg');"></div>
+                        <div class="shadow cover-full"></div>
                         <div class="desc center">
                             <h4>Dire Dawa</h4>
                             <a href="#">View more</a>
@@ -212,8 +358,8 @@
                 </div>
                 <div class="col-md-4 col-6">
                     <div class="box-image">
-                        <div class="image cover-full transition" style="background-image: url('../images/pro4.jpg');"></div>
-                        <div class="shadow cover-full transition"></div>
+                        <div class="image cover-full" style="background-image: url('/images/pro4.jpg');"></div>
+                        <div class="shadow cover-full"></div>
                         <div class="desc center">
                             <h4>Gonder</h4>
                             <a href="#">View more</a>
@@ -222,8 +368,8 @@
                 </div>
                 <div class="col-md-4 col-6">
                     <div class="box-image">
-                        <div class="image cover-full transition" style="background-image: url('../images/pro5.jpg');"></div>
-                        <div class="shadow cover-full transition"></div>
+                        <div class="image cover-full" style="background-image: url('/images/pro5.jpg');"></div>
+                        <div class="shadow cover-full"></div>
                         <div class="desc center">
                             <h4>Nazret</h4>
                             <a href="#">View more</a>
@@ -232,8 +378,8 @@
                 </div>
                 <div class="col-md-4 col-6">
                     <div class="box-image">
-                        <div class="image cover-full transition" style="background-image: url('../images/pro6.jpg');"></div>
-                        <div class="shadow cover-full transition"></div>
+                        <div class="image cover-full" style="background-image: url('/images/pro6.jpg');"></div>
+                        <div class="shadow cover-full"></div>
                         <div class="desc center">
                             <h4>Browse Your Own Location</h4>
                             <a href="#">View more</a>
@@ -243,6 +389,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- FOOTER -->
     <footer class="footer footer1">
@@ -281,13 +428,25 @@
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="../lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Owl Carousel JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
 
     <script>
-      
+        $(document).ready(function(){
+            $(".owl-carousel").owlCarousel({
+                items: 1,
+                loop: true,
+                
+                autoplay: true,
+                autoplayTimeout: 3000,
+                dots: true
+            });
+        });
     </script>
+
 </body>
 </html>
