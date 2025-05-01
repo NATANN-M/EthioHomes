@@ -17,6 +17,7 @@ namespace EthioHomes.Controllers
         {
             var userType = HttpContext.Session.GetString("UserType");
 
+            var userName = HttpContext.Session.GetString("UserName");
             if (userType == null)
             {
                 // Pass userType to the view only if the user is logged in
@@ -26,6 +27,9 @@ namespace EthioHomes.Controllers
             {
 
                 ViewBag.UserType = userType;
+                ViewBag.UserName = userName; 
+
+
             }
 
             return View();

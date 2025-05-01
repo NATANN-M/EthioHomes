@@ -7,27 +7,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List Your Property</title>
+    <link rel="stylesheet" href="~/css/styleNavigation.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <header class="header">
+    <nav id="navbar" class="navbar navbar-expand-sm">
         <div class="container">
-            <div class="logo">
-                <h1><em>EthioHomes</em></h1>
+            <a class="navbar-brand" href="/Home/index">
+                <h1 style="color: white;"><em>Ethio Homes</em></h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
+                <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-main">
+                <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/Home/index#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/index#testimonials">Testimonials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/index#Contact">Contact</a>
+                    </li>
+                </ul>
             </div>
-            <nav class="nav">
-                <a href="#">Home</a>
-                <a href="#">Contact</a>
-                <a href="#">Services</a>
-                <a href="#">Testimonials</a>
-                <a href="#">logout</a>
-                <a><img src="/images/image.png" alt="" href="#profile"> </a>
-            </nav>
         </div>
-    </header>
+    </nav>
+
 
     <main>
-        <section class="hero">
+        <section class="hero" style="margin-top: 5rem;">
             <h1>The perfect place for Rent And Sell Property</h1>
         </section>
 
@@ -37,7 +48,7 @@
 
 
             <form id="property-listing-form" method="post" enctype="multipart/form-data" asp-action="AddProperty">
-               
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="title">Title</label>
@@ -49,23 +60,23 @@
                     </div>
                     <div class="form-group">
                         <label for="price">Price</label>
-                        <input id ="price" type="number" name="Price" step="0.01" required />
+                        <input id="price" type="number" name="Price" step="0.01" required />
                     </div>
                     <div class="form-group">
                         <label for="property-type">Property Type</label>
                         <select id="property-type" name="PropertyType">
-        <option value="Residential">Residential</option>
-        <option value="Commercial">Commercial</option>
-    </select>
+                            <option value="Residential">Residential</option>
+                            <option value="Commercial">Commercial</option>
+                        </select>
                     </div>
-   
+
                     <div class="form-group">
                         <label for="status">Status</label>
 
                         <select id="status" name="Status">
-        <option value="Available">Available</option>
-        <option value="Sold">Sold</option>
-    </select>
+                            <option value="Available">Available</option>
+                            <option value="Sold">Sold</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -83,13 +94,13 @@
                     <div class="form-group full">
                         <label for="description">Description</label>
                         <textarea id="description" rows="5" name="Description"></textarea>
-                        </div>
+                    </div>
 
                     <div class="form-group full">
                         <label for="images" class="drop-container" id="dropcontainer">
                             <span class="drop-title">Drop files here</span>
                             or
-                            <input name="images" type="file" id="images"  multiple required>
+                            <input name="images" type="file" id="images" multiple required>
                         </label>
                     </div>
                 </div>
@@ -97,7 +108,7 @@
                     <button type="submit">Publish Listing</button>
                     <button type="button" class="secondary">Cancel</button>
                 </div>
-</form>
+            </form>
         </section>
     </main>
     <footer class="footer">

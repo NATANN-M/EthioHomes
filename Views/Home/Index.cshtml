@@ -3,27 +3,25 @@
 }
 @{
     var userType = ViewBag.UserType;
-    
+
 }
 
-@{
-    var loginSuccessMessage = TempData["LoginSuccess"] as string;
-    var showLogoutConfirm = TempData["ShowLogoutConfirm"] as bool? ?? false;
-}
+
 
 @model EthioHomes.Models.User
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-   
+
     <title>EthioHomes - Home</title>
 
 
 
 
     <!-- Custom CSS Files -->
-    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/styleNavigation.css" asp-append-version="true">
     <link rel="stylesheet" href="/css/colors.css" asp-append-version="true">
     <link rel="stylesheet" href="/css/responsive.css" asp-append-version="true">
 
@@ -44,11 +42,7 @@
 </head>
 
 <body>
-
-    
-
-    <!-- NAVBAR -->
-  <!--  <nav id="navbar" class="navbar navbar-expand-sm">
+    <nav id="navbar" class="navbar navbar-expand-sm">
         <div class="container">
             <a class="navbar-brand" href="#">
                 <h1 style="color: white;"><em>Ethio Homes</em></h1>
@@ -61,12 +55,53 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="#about">About</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/User/Login">Log in</a>
-                    </li>
+
+
+                    <!-- Check if the user is logged in -->
+                    @if (ViewBag.UserType != null)
+                    {
+                     
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Profile
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <li><a class="dropdown-item" href="/Messages/Conversations" asp-controller="Messages"
+                                        asp-action="Conversations">Messages</a></li>
+                                <li>
+                                    <a asp-action="MySavedProperties" asp-controller="UserProperties" class="dropdown-item"
+                                        href="/UserProperties/MySavedProperties">Saved Properties</a>
+                                </li>
+                                <li>
+                                    <a asp-action="MyBookings" asp-controller="UserProperties" class="dropdown-item"
+                                        href="/UserProperties/MyBookings">Bookings</a>
+                                </li>
+                                <!-- Conditional menu items based on UserType -->
+                                @if (ViewBag.UserType == "Owner")
+                                {
+                                    <li><a class="dropdown-item" href="/Property/AddProperty">Add Property</a></li>
+                                    <li><a class="dropdown-item" href="/Property/ViewMyListings">View My Listings</a></li>
+
+                                   
+                                    
+                                        <li><a class="dropdown-item" href="@Url.Action("ManageBookings", "Booking")">Manage Bookings</a></li>
+                                    
+
+                                }
+
+                                <li><a class="dropdown-item" href="/User/Logout">Log Out</a></li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- If the user is not logged in, show the login link -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/User/Login">Log in</a>
+                        </li>
+                    }
+
                     <li class="nav-item">
                         <a class="nav-link" href="#testimonials">Testimonials</a>
                     </li>
@@ -76,76 +111,7 @@
                 </ul>
             </div>
         </div>
-    </nav>   
-    -->
-    <nav id="navbar" class="navbar navbar-expand-sm">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <h1 style="color: white;"><em>Ethio Homes</em></h1>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
-            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar-main">
-            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#services">Services</a>
-                </li>
-
-                <!-- Check if the user is logged in -->
-                @if (ViewBag.UserType != null)
-                {
-                    <!-- Display profile picture and menu options based on UserType -->
-                    @* <li class="nav-item"> *@
-                    @*     <a class="nav-link" href="#profile"> *@
-                    @*         <img src="path/to/profile-pic.jpg" alt="Profile Picture" class="rounded-circle" width="20" height="20"> *@
-                    @*     </a> *@
-                    @* </li> *@
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            Profile
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="/User/Profile">View Profile</a></li>
-                            <li><a class="dropdown-item" href="/User/Message">Messages</a></li>
-                                <li>
-                                    <a asp-action="MySavedProperties" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MySavedProperties">Saved Properties</a>
-                                </li>
-                                <li>
-                                    <a asp-action="MyBookings" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MyBookings">Bookings</a>
-                                </li>
-                            <!-- Conditional menu items based on UserType -->
-                            @if (ViewBag.UserType == "Owner")
-                            {
-                                <li><a class="dropdown-item" href="/Property/AddProperty">Add Property</a></li>
-                                <li><a class="dropdown-item" href="/Property/ViewMyListings">View My Listings</a></li>
-                            }
-
-                            <li><a class="dropdown-item" href="/User/Logout">Log Out</a></li>
-                        </ul>
-                    </div>
-                }
-                else
-                {
-                    <!-- If the user is not logged in, show the login link -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/User/Login">Log in</a>
-                    </li>
-                }
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#testimonials">Testimonials</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#contact">Contact</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+    </nav>
 
 
 
@@ -153,72 +119,27 @@
 
 
 
-    
 
-    <!-- Login Success Modal -->
-    @if (!string.IsNullOrEmpty(loginSuccessMessage))
-    {
-        <div class="modal fade" id="loginSuccessModal" tabindex="-1" aria-labelledby="loginSuccessModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="loginSuccessModalLabel">Login Successful</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        @loginSuccessMessage
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <script type="text/javascript">
-            var loginModal = new bootstrap.Modal(document.getElementById('loginSuccessModal'));
-            loginModal.show();
-        </script>
-    }
+  
+              
 
-    <!-- Logout Confirmation Modal -->
-    @if (showLogoutConfirm)
-    {
-        <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="logoutConfirmModalLabel">Are you sure you want to log out?</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <a href="/User/Logout" class="btn btn-primary">Yes, Log out</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script type="text/javascript">
-            var logoutModal = new bootstrap.Modal(document.getElementById('logoutConfirmModal'));
-            logoutModal.show();
-        </script>
-    }
-
- 
    
 
 
 
+
+
+
     <!-- CAROUSEL IMAGES -->
-    <section class="banner">
+    <section class="banner" id="home">
         <div class="owl-carousel owl-theme carousel-sliders">
             <div class="item" style="background-image: url('/images/slide3.jpg');">
                 <div class="overlay-bg cover-full"></div>
                 <div class="container">
                     <div class="caption">
                         <h1 class="caption-heading">The perfect place for your Needs</h1>
-                        <a href="PropertyListing/Index" class="btn btn-secondary">View more</a>
+                        <a  href="@Url.Action("index","PropertyListing")" class="btn btn-secondary">View more</a>
                     </div>
                 </div>
             </div>
@@ -227,7 +148,8 @@
                 <div class="container">
                     <div class="caption">
                         <h1 class="caption-heading">The perfect place for your Needs</h1>
-                        <a href="#" class="btn btn-secondary">View more</a>
+                        <a href="@Url.Action("index","PropertyListing")"
+                         class="btn btn-secondary">View more</a>
                     </div>
                 </div>
             </div>
@@ -236,7 +158,7 @@
                 <div class="container">
                     <div class="caption">
                         <h1 class="caption-heading">The perfect place for your Needs</h1>
-                        <a href="#" class="btn btn-secondary">View more</a>
+                        <a href="@Url.Action("index","PropertyListing")"  class="btn btn-secondary">View more</a>
                     </div>
                 </div>
             </div>
@@ -252,7 +174,8 @@
                 <div class="col-md-6">
                     <div class="about-content">
                         <p>
-                            We simplify real estate selling, and renting. Join Ethio Homes for a new era of convenient and transparent property management.
+                            We simplify real estate selling, and renting. Join Ethio Homes for a new era of convenient
+                            and transparent property management.
                         </p>
                         <img class="w-100 p-3" src="/images/about.jpg" alt="About Us">
                     </div>
@@ -263,22 +186,33 @@
                             <li>
                                 <i class="fas fa-trophy"></i>
                                 <h4>Comfortable</h4>
-                                <p>Ethio Homes provides a comfortable real estate experience with its intuitive interface, extensive property listings, and secure online tools. Easily browse, negotiate, and finalize transactions all in one place, ensuring a stress-free process for buyers, sellers, and tenants.</p>
+                                <p>Ethio Homes provides a comfortable real estate experience with its intuitive
+                                    interface, extensive property listings, and secure online tools. Easily browse,
+                                    negotiate, and finalize transactions all in one place, ensuring a stress-free
+                                    process for buyers, sellers, and tenants.</p>
                             </li>
                             <li>
                                 <i class="fas fa-bullhorn"></i>
                                 <h4>Efficiency</h4>
-                                <p>Ethio Homes enhances efficiency in real estate transactions with its streamlined processes. From listing properties to finalizing agreements, our platform reduces time and effort, making the buying, selling, and renting experience faster and more straightforward for all users.</p>
+                                <p>Ethio Homes enhances efficiency in real estate transactions with its streamlined
+                                    processes. From listing properties to finalizing agreements, our platform reduces
+                                    time and effort, making the buying, selling, and renting experience faster and more
+                                    straightforward for all users.</p>
                             </li>
                             <li>
                                 <i class="fas fa-user-shield"></i>
                                 <h4>Distribution</h4>
-                                <p>Ethio Homes connects buyers, sellers, and renters from different locations, providing extensive reach and visibility for all properties. This comprehensive network facilitates efficient and effective real estate transactions nationwide.</p>
+                                <p>Ethio Homes connects buyers, sellers, and renters from different locations, providing
+                                    extensive reach and visibility for all properties. This comprehensive network
+                                    facilitates efficient and effective real estate transactions nationwide.</p>
                             </li>
                             <li>
                                 <i class="fas fa-id-card-alt"></i>
                                 <h4>Transparency</h4>
-                                <p>Prioritizes transparency in all interactions. Detailed property descriptions, clear pricing information, and secure online agreements ensure that buyers, sellers, and tenants have all the information they need to make informed decisions confidently.</p>
+                                <p>Prioritizes transparency in all interactions. Detailed property descriptions, clear
+                                    pricing information, and secure online agreements ensure that buyers, sellers, and
+                                    tenants have all the information they need to make informed decisions confidently.
+                                </p>
                             </li>
                         </ul>
                     </div>
@@ -289,36 +223,33 @@
 
     <!-- SERVICES -->
     <!-- <section id="services" class="services">  -->
+    <!--propertyListing-->
 
-        <!--propertyListing-->
-
-    <section src="PropertyListing/Index.cshtml">
-
-        <iframe src="PropertyListing/Index.cshtml"></iframe>
-        
-
-    </section>
+    @* <section id="PropertyListing" style="text-align: center; margin: 0 auto;">
+        <iframe src="@Url.Action("Index", "PropertyListing")"
+            style="width: 100%; height: 600px; border: none;"></iframe>
+    </section> *@
 
 
 
-        <div class="row">
-            <div class="col-md-6 box-image">
-                <div class="image cover-full transition" style="background-image: url('../images/service2.jpg');"></div>
-                <div class="shadow cover-full transition"></div>
-                <div class="desc center">
-                    <h4>Rentals</h4>
-                    <a href="#" class="btn-secondary">View more</a>
-                </div>
-            </div>
-            <div class="col-md-6 box-image">
-                <div class="image cover-full transition" style="background-image: url('../images/service3.jpg');"></div>
-                <div class="shadow cover-full transition"></div>
-                <div class="desc center">
-                    <h4>For Sale</h4>
-                    <a href="#" class="btn-secondary">View more</a>
-                </div>
+    <div class="row">
+        <div class="col-md-6 box-image">
+            <div class="image cover-full transition" style="background-image: url('../images/service2.jpg');"></div>
+            <div class="shadow cover-full transition"></div>
+            <div class="desc center">
+                <h4>Rentals</h4>
+                <a href="#" class="btn-secondary">View more</a>
             </div>
         </div>
+        <div class="col-md-6 box-image">
+            <div class="image cover-full transition" style="background-image: url('../images/service3.jpg');"></div>
+            <div class="shadow cover-full transition"></div>
+            <div class="desc center">
+                <h4>For Sale</h4>
+                <a href="#" class="btn-secondary">View more</a>
+            </div>
+        </div>
+    </div>
     </section>
 
     <section id="projects" class="projects">
@@ -390,9 +321,57 @@
         </div>
     </section>
 
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="testimonials">
+        <div class="container pt-5 pb-5">
+            <h1 class="section-title">What’s Our Customer Say</h1>
+            <div class="owl-carousel owl-theme carousel-testimonials">
+                <div class="item testimonial">
+                    <img class="transition rounded-3"
+                        src="https://lumenor.ai/cdn-cgi/imagedelivery/F5KOmplEz0rStV2qDKhYag/0e225278-0f5b-451e-506f-fadbc6dd5f00/tn"
+                        alt="testimonial detail">
+                    <div class="testimonial-content">
+                        <p>Ethio Homes made finding our dream home effortless. The extensive listings and detailed
+                            property descriptions helped us make an informed decision quickly. The secure online tools
+                            made the buying process seamless and stress-free. Highly recommend Ethio Homes!"</p>
+                        <h4>Alex Schmidt</h4>
+                        <h5>CEO Ruble Engeenering</h5>
+                    </div>
+                </div>
+                <div class="item testimonial">
+                    <img class="transition"
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcJmeoMri_gtd3XW508-Ex4463AtmotzoUDA&s"
+                        alt="testimonial detail">
+                    <div class="testimonial-content">
+                        <p>As a landlord, Ethio Homes has been a game-changer. Listing my property was easy, and I
+                            received multiple inquiries within days. The digital contract feature streamlined the rental
+                            agreement process, saving me time and reducing paperwork. PropertyPro is the best platform
+                            I've used!</p>
+                        <h4>James L.</h4>
+                        <h5>Property Owner</h5>
+                    </div>
+                </div>
+                <div class="item testimonial">
+                    <img class="transition"
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSej6k8rDiuFJwlyS6KBD-FC9rVC68mv7PtXA&s"
+                        alt="testimonial detail">
+                    <div class="testimonial-content">
+                        <p>Using Ethio Homes to find a new office space was a breeze. The platform's user-friendly
+                            interface allowed us to filter listings based on our exact requirements, and the online
+                            negotiation tools made finalizing the lease quick and efficient. Ethio Homes is a must for
+                            any business looking for commercial property.</p>
+                        <h4>Emily R.</h4>
+                        <h5>Business Owner</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
 
     <!-- FOOTER -->
-    <footer class="footer footer1">
+    <footer class="footer footer1" id="contact">
         <div class="container pt-5 pb-5">
             <div class="row">
                 <div class="col-md-4">
@@ -436,17 +415,39 @@
     <script src="/js/owl.carousel.min.js"></script>
 
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
             $(".owl-carousel").owlCarousel({
                 items: 1,
                 loop: true,
-                
                 autoplay: true,
                 autoplayTimeout: 3000,
-                dots: true
+                dots: true,
+                nav: true,
+                navText: ["<", ">"],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 1
+                    },
+                    1000: {
+                        items: 1
+                    }
+                }
+            });
+
+            // Add keyboard navigation
+            $(document).keydown(function (e) {
+                if (e.keyCode == 37) { // Left arrow key
+                    $(".owl-carousel").trigger('prev.owl.carousel');
+                } else if (e.keyCode == 39) { // Right arrow key
+                    $(".owl-carousel").trigger('next.owl.carousel');
+                }
             });
         });
     </script>
 
 </body>
+
 </html>

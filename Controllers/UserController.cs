@@ -1,4 +1,5 @@
-﻿using EthioHomes.Models;
+﻿using Azure.Identity;
+using EthioHomes.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -15,16 +16,26 @@ public class UserController : Controller
     [HttpPost]
     public IActionResult SignUp(User user)
     {
-        using (SqlConnection conn = new(connectionString))
+        try
         {
-            conn.Open();
-            string query = "INSERT INTO Users (Name, Email, Password, UserType) VALUES (@Name, @Email, @Password, @UserType)";
-            SqlCommand cmd = new(query, conn);
-            cmd.Parameters.AddWithValue("@Name", user.Name);
-            cmd.Parameters.AddWithValue("@Email", user.Email);
-            cmd.Parameters.AddWithValue("@Password", user.Password);
-            cmd.Parameters.AddWithValue("@UserType", user.UserType);
-            cmd.ExecuteNonQuery();
+
+
+            using (SqlConnection conn = new(connectionString))
+            {
+                conn.Open();
+                string query = "INSERT INTO Users (Name, Email, Password, UserType) VALUES (@Name, @Email, @Password, @UserType)";
+                SqlCommand cmd = new(query, conn);
+                cmd.Parameters.AddWithValue("@Name", user.Name);
+                cmd.Parameters.AddWithValue("@Email", user.Email);
+                cmd.Parameters.AddWithValue("@Password", user.Password);
+                cmd.Parameters.AddWithValue("@UserType", user.UserType);
+                cmd.ExecuteNonQuery();
+            }
+        }catch(Exception e)
+        {
+            throw (e);
+
+
         }
         ViewBag.Message = "Sign Up Successful";
         return RedirectToAction("Login");
@@ -54,16 +65,18 @@ public class UserController : Controller
                 // Store user data in session
                 HttpContext.Session.SetInt32("UserId", Convert.ToInt32(reader["Id"]));
                 HttpContext.Session.SetString("UserType", reader["UserType"].ToString());
+                HttpContext.Session.SetString("userName", reader["Name"].ToString());
+                string userName = reader["Name"].ToString();
+              
 
-                // Set the login success message in TempData to show the modal
-                TempData["LoginSuccess"] = "Login successful! Welcome back.";
                 // Redirect based on user type
                 if (reader["UserType"].ToString() == "Owner")
                 {
-                    return RedirectToAction("AddProperty", "Property");
+                    ViewBag.useName = userName;
+                    return RedirectToAction("AddProperty", "Property", new {userName});
                 }
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new {  userName });
             }
         }
 

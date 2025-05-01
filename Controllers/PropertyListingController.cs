@@ -38,6 +38,8 @@ namespace EthioHomes.Controllers
                     query += " AND Price <= " + maxPrice.Value;
                 }
 
+                   // Calculate row numbers for pagination
+   
                 // Create the command
                 SqlCommand cmd = new SqlCommand(query, conn);
 

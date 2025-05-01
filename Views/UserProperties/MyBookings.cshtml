@@ -1,90 +1,86 @@
 ﻿@model List<EthioHomes.Models.Booking>
 
-<nav id="navbar" class="navbar navbar-expand-sm">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <h1 style="color: white;"><em>Ethio Homes</em></h1>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
-            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar-main">
-            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#services">Services</a>
-                </li>
+<!DOCTYPE html>
+<html lang="en">
 
-                <!-- Check if the user is logged in -->
-                @if (ViewBag.UserType != null)
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Ethio Homes</title>
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/styleNavigation.css" asp-append-version="true">
+    <link rel="stylesheet" href="/css/responsive.css" asp-append-version="true">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Bootstrap (Local Copy) -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
+
+    <!-- Owl Carousel (Local Copy) -->
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+</head>
+
+<body style="background-color: rgb(252, 238, 238);">
+    <nav id="navbar" class="navbar navbar-expand-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/Home/index">
+                <h1 ><em>Ethio Homes</em></h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
+                <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-main">
+                <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                    <li style="color: black;" class="nav-item">
+                        <a class="nav-link active" href="/Home/index#about">About</a>
+                    </li>
+                    <li style="color: black;" class="nav-item">
+                        <a class="nav-link" href="/Home/index#testimonials">Testimonials</a>
+                    </li>
+                    <li style="color: black;" class="nav-item">
+                        <a class="nav-link" href="/Home/index#Contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container py-4 ">
+        <h1 class="text-center mb-4 mt-5" style="border-top: 1px solid;">My Bookings</h1>
+        <hr>
+        @if (Model.Count == 0)
+        {
+            <div class="text-center text-muted">
+                <h5>You have no bookings yet.</h5>
+            </div>
+        }
+        else
+        {
+            <div id="bookings-container">
+                @foreach (var booking in Model)
                 {
-                    <!-- Display profile picture and menu options based on UserType -->
-                    @* <li class="nav-item"> *@
-                    @*     <a class="nav-link" href="#profile"> *@
-                    @*         <img src="path/to/profile-pic.jpg" alt="Profile Picture" class="rounded-circle" width="20" height="20"> *@
-                    @*     </a> *@
-                    @* </li> *@
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            Profile
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="/User/Profile">View Profile</a></li>
-                            <li><a class="dropdown-item" href="/User/Message">Messages</a></li>
-                            <li>
-                                <a asp-action="MySavedProperties" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MySavedProperties">Saved Properties</a>
-                            </li>
-                            <li>
-                                <a asp-action="MyBookings" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MyBookings">Bookings</a>
-                            </li>
-                            <!-- Conditional menu items based on UserType -->
-                            @if (ViewBag.UserType == "Owner")
-                            {
-                                <li><a class="dropdown-item" href="/Property/AddProperty">Add Property</a></li>
-                                <li><a class="dropdown-item" href="/Property/ViewMyListings">View My Listings</a></li>
-                            }
-
-                            <li><a class="dropdown-item" href="/User/Logout">Log Out</a></li>
-                        </ul>
+                    <div class="card mb-3 " style="backdrop-filter: blur(10px);">
+                        <div class="card-body">
+                            <h5 class="card-title">Property ID: @booking.PropertyId</h5>
+                            <p class="card-text">Booking Date: @booking.BookingDate</p>
+                            <p class="card-text">Status: @booking.Status</p>
+                        </div>
                     </div>
                 }
-                else
-                {
-                    <!-- If the user is not logged in, show the login link -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/User/Login">Log in</a>
-                    </li>
-                }
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#testimonials">Testimonials</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#contact">Contact</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<h2>My Bookings</h2>
-
-@if (Model.Count == 0)
-{
-    <p>No bookings found.</p>
-}
-else
-{
-    <div>
-        @foreach (var booking in Model)
-        {
-            <div>
-                <h3>@booking.PropertyId</h3>
-                <p>Booking Date: @booking.BookingDate</p>
-                <p>Status: @booking.Status</p>
             </div>
         }
     </div>
-}
+
+    <footer class="text-center py-3">
+        <p>&copy; 2025 EthioHomes. All Rights Reserved.</p>
+    </footer>
+
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

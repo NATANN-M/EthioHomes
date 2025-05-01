@@ -2,129 +2,216 @@
 @{
     ViewBag.Title = "Messages";
     int userId = (int)ViewBag.UserId;
-    string Reciver = (ViewBag.ReceiverId).ToString();
-    string Sender = (ViewBag.UserId).ToString();
-    
-    ViewBag.UserId
- = userId;
+    string receiverId = ViewBag.ReceiverId.ToString();
 }
-<nav id="navbar" class="navbar navbar-expand-sm">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <h1 style="color: white;"><em>Ethio Homes</em></h1>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
-            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar-main">
-            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#services">Services</a>
-                </li>
 
-                <!-- Check if the user is logged in -->
-                @if (ViewBag.UserType != null)
-                {
-                 
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            Profile
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="/User/Profile">View Profile</a></li>
-                            <li><a class="dropdown-item" href="/User/Message">Messages</a></li>
-                            <li>
-                                <a asp-action="MySavedProperties" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MySavedProperties">Saved Properties</a>
-                            </li>
-                            <li>
-                                <a asp-action="MyBookings" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MyBookings">Bookings</a>
-                            </li>
-                            
-
-                            @if (ViewBag.UserType == "Owner")
-                            {
-                                <li><a class="dropdown-item" href="/Property/AddProperty">Add Property</a></li>
-                                <li><a class="dropdown-item" href="/Property/ViewMyListings">View My Listings</a></li>
-                            }
-
-                            <li><a class="dropdown-item" href="/User/Logout">Log Out</a></li>
-                        </ul>
-                    </div>
-                }
-                else
-                {
+<head>
+    <title>Conversation Details - Ethio Homes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom CSS Files -->
+    <link rel="stylesheet" href="/css/responsive.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/styleNavigation.css" asp-append-version="true">
 
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="/User/Login">Log in</a>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Bootstrap (Local Copy) -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
+    <!-- Owl Carousel (Local Copy) -->
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #ffffff;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+        }
+        .header h1 {
+            margin-top: 5rem;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            border-top: solid 1px;
+        }
+
+        .header .back-button {
+            margin: 100px;
+            text-align: left;
+            text-decoration: none;
+            color: #007bff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 1px solid #007bff;
+            background: #ffffff;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .header .back-button:hover {
+            background: #007bff;
+            color: #ffffff;
+        }
+
+        .container1 {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 60vh;
+            width: 70%;
+            margin: 20px auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .conversation-details {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #fafafa;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            max-width: 70%;
+            padding: 10px 15px;
+            background: #f1f1f1;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: #e7f3ff;
+        }
+
+        .message .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #007bff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .message-content p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .message-content .timestamp {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .message-form {
+            display: flex;
+            gap: 10px;
+            padding: 10px 20px;
+            border-top: 1px solid #e0e0e0;
+            background: #ffffff;
+        }
+
+        .message-form textarea {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            resize: none;
+        }
+
+        .message-form button {
+            background: #007bff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .message-form button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <nav id="navbar" class="navbar navbar-expand-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/Home/index">
+                <h1><em>Ethio Homes</em></h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
+                <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-main">
+                <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                    <li style="color: black;"  class="nav-item">
+                        <a class="nav-link active" href="/Home/index#about">About</a>
                     </li>
-                }
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#testimonials">Testimonials</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#contact">Contact</a>
-                </li>
-            </ul>
+                    <li style="color: black;" class="nav-item">
+                        <a class="nav-link" href="/Home/index#testimonials">Testimonials</a>
+                    </li>
+                    <li style="color: black;" class="nav-item">
+                        <a class="nav-link" href="/Home/index#Contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
         </div>
+    </nav>
+    <div class="header">
+        <h1>Conversation Details</h1>
+        <a href="/Messages/Conversations" class="back-button">Back
+            to Conversations</a>
     </div>
-</nav>
 
-<h2>Messages for Property @ViewBag.PropertyId</h2>
-<h2>Datas:
-    @ViewBag.ReceiverId = receiverId;<br>
-    @ViewBag.UserId = userId;
-</h2>
-
-<!-- Display messages -->
-<div class="message-thread">
-    @foreach (var message in Model)
-    {
-        <div class="message @(message.SenderId == userId ? "sent" : "received")">
-            <p>
-                <strong>@(message.SenderId == userId ? "You" : "Other"):</strong>
-                @message.Content
-            </p>
-            <p><small>@message.SentDate</small></p>
+    <div class="container1">
+        <div class="conversation-details">
+            @foreach (var message in Model)
+            {
+                <div class="message @(message.SenderId == userId ? "user" : "")">
+                    <div class="avatar">
+                        @(message.SenderId == userId ? "Y" : "Z")
+                    </div>
+                    <div class="message-content">
+                        <p>@message.Content</p>
+                        <p class="timestamp">@message.SentDate.ToString("g")</p>
+                    </div>
+                </div>
+            }
         </div>
-    }
-</div>
 
-<h3>Send a New Message</h3>
-<form action="@Url.Action("SendMessage", "Messages")" method="post">
-    <input type="hidden" name="propertyId" value="@ViewBag.PropertyId" />
-    <input type="hidden" name="receiverId" value="@ViewBag.ReceiverId" />
-    <textarea name="content" placeholder="Type your message here" required></textarea>
-    <button type="submit" class="btn btn-primary">Send</button>
-</form>
-
-
-
-
- 
-<style>
-    .message-thread {
-        border: 1px solid #ccc;
-        padding: 15px;
-        max-height: 400px;
-        overflow-y: scroll;
-    }
-
-    .message {
-        margin-bottom: 10px;
-    }
-
-    .message.sent {
-        text-align: right;
-        color: blue;
-    }
-
-    .message.received {
-        text-align: left;
-        color: green;
-    }
-</style>
+        <form action="@Url.Action("SendMessage", "Messages")" method="post" class="message-form">
+            <input type="hidden" name="propertyId" value="@ViewBag.PropertyId" />
+            <input type="hidden" name="receiverId" value="@receiverId" />
+            <textarea name="content" placeholder="Type your message here..." rows="2" required></textarea>
+            <button type="submit"><i class="fas fa-paper-plane"></i> Send</button>
+        </form>
+    </div>
+</body>

@@ -12,14 +12,14 @@ namespace EthioHomes.Controllers
         // Show Add Property form
         public IActionResult AddProperty()
         {
-            //int? userId = HttpContext.Session.GetInt32("UserId");
-            //string userType = HttpContext.Session.GetString("UserType");
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            string userType = HttpContext.Session.GetString("UserType");
 
-            //// Check if the user is logged in and is an owner
-            //if (userId == null || userType != "Owner")
-            //{
-            //    return RedirectToAction("index", "User");
-            //}
+            // Check if the user is logged in and is an owner
+            if (userId == null || userType != "Owner")
+            {
+                return RedirectToAction("index", "User");
+            }
 
             return View();
         }
@@ -121,7 +121,8 @@ namespace EthioHomes.Controllers
                         Status = reader["Status"].ToString(),
                         Bedrooms = Convert.ToInt32(reader["Bedrooms"]),
                         Bathrooms = Convert.ToInt32(reader["Bathrooms"]),
-                        Description = reader["Description"].ToString()
+                        Description = reader["Description"].ToString(),
+                        OwnerId = Convert.ToInt32(reader["OwnerId"])
                     };
                 }
                 reader.Close();

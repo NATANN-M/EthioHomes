@@ -1,47 +1,292 @@
 ﻿@model EthioHomes.Models.Property
 
-<h2>@Model.Title</h2>
-
-<!-- Display images -->
-
-<div >
-    <h3>Images</h3>
-    @if (Model.Images.Count > 0)
-    {
-        @foreach (var image in Model.Images)
-        {
-            <img src="/uploads/@image.ImagePath" alt="Property Image" style="width:200px; height:auto; margin:10px;" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Styles -->
+    <style>
+        :root {
+            --color-primary: #2A2A2A;
+            --color-accent: #FF6B6B;
+            --color-light: #F4F4F4;
+            --color-dark: #1A1A1A;
         }
-    }
-    else
-    {
-        <p>No images available</p>
-    }
-</div>
 
-<p><strong>Location:</strong> @Model.Location</p>
-<p><strong>Price:</strong> @Model.Price</p>
-<p><strong>Type:</strong> @Model.PropertyType</p>
-<p><strong>Status:</strong> @Model.Status</p>
-<p><strong>Bedrooms:</strong> @Model.Bedrooms</p>
-<p><strong>Bathrooms:</strong> @Model.Bathrooms</p>
-<p><strong>Description:</strong> @Model.Description</p>
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
+        .navbar {
+            background: rgba(42, 42, 42, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
 
+        .btn-back {
+            background: var(--color-accent);
+            color: white;
+            border-radius: 25px;
+            padding: 8px 20px;
+            transition: all 0.3s ease;
+        }
 
+            .btn-back:hover {
+                transform: translateX(-5px);
+                background: #ff5252;
+            }
 
-<!-- Actions -->
-<div>
-    <a href="/Messages/ViewMessages?propertyId=@Model.Id" class="btn btn-primary">Contact Owner</a>
+        .property-details {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
 
-    <form action="@Url.Action("SaveProperty", "PropertyActions")" method="post">
-        <input type="hidden" name="propertyId" value="@Model.Id" />
-        <button type="submit" class="btn btn-success">Save Property</button>
-    </form>
+        .carousel-inner {
+            border-radius: 15px;
+            overflow: hidden;
+        }
 
-    <form action="@Url.Action("BookProperty", "PropertyActions")" method="post">
-        <input type="hidden" name="propertyId" value="@Model.Id" />
-        <button type="submit" class="btn btn-warning">Book Property</button>
-    </form>
+        .carousel-item img {
+            height: 400px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
 
-</div>
+        .detail-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .property-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--color-light);
+            border-radius: 15px;
+            margin: 1.5rem 0;
+        }
+
+        .action-buttons .btn {
+            margin: 0.5rem;
+            padding: 12px 25px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+            .action-buttons .btn:hover {
+                transform: translateY(-2px);
+            }
+
+        footer {
+            background: var(--color-dark);
+            color: white;
+            margin-top: auto;
+            padding: 2rem 0;
+        }
+
+        @@media (max-width: 768px) {
+            .carousel-item img {
+                height: 300px;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <h2 class="text-white fw-bold"><i class="fas fa-home me-2"></i>EthioHomes</h2>
+            </a>
+            <!-- ... keep existing navbar structure ... -->
+        </div>
+    </nav>
+
+    <main class="container py-4 mt-5">
+        <button onclick="history.back()" class="btn btn-back">
+            <i class="fas fa-arrow-left me-2"></i>Back
+        </button>
+
+        <div class="property-details">
+            <h1 class="display-4 fw-bold mb-4">@Model.Title</h1>
+
+            <div class="row g-4">
+                <!-- Image Carousel -->
+                <div class="col-lg-7">
+                    @if (Model.Images.Count > 0)
+                    {
+                        <div id="propertyCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                @for (int i = 0; i < Model.Images.Count; i++)
+                                {
+                                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                                        <img src="/uploads/@Model.Images[i].ImagePath"
+                                             class="d-block w-100" alt="Property image">
+                                    </div>
+                                }
+                            </div>
+                            <!-- Carousel Controls -->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 bg-light rounded">
+                            <i class="fas fa-image fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No images available</p>
+                        </div>
+                    }
+                </div>
+
+                <!-- Property Info -->
+                <div class="col-lg-5">
+                    <div class="property-features">
+                        <div class="text-center">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                            <h5 class="mt-2">@Model.Location</h5>
+                            <small class="text-muted">Location</small>
+                        </div>
+                        <div class="text-center">
+                            <i class="fas fa-tag text-primary"></i>
+                            <h5 class="mt-2">$@Model.Price</h5>
+                            <small class="text-muted">Price</small>
+                        </div>
+                        <div class="text-center">
+                            <i class="fas fa-home text-primary"></i>
+                            <h5 class="mt-2">@Model.PropertyType</h5>
+                            <small class="text-muted">Type</small>
+                        </div>
+                    </div>
+
+                    <div class="bg-light p-4 rounded">
+                        <h4 class="mb-3 fw-bold">Details</h4>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <p><i class="fas fa-bed me-2"></i> @Model.Bedrooms Bedrooms</p>
+                            </div>
+                            <div class="col-6">
+                                <p><i class="fas fa-bath me-2"></i> @Model.Bathrooms Bathrooms</p>
+                            </div>
+                            <div class="col-12">
+                                <p><i class="fas fa-info-circle me-2"></i> @Model.Status</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h4 class="fw-bold mb-3">Description</h4>
+                        <p class="text-muted">@Model.Description</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons mt-5 text-center">
+                <form action="@Url.Action("SaveProperty", "PropertyActions")" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-2"></i>Save Property
+                    </button>
+                </form>
+
+                <!-- Book Now Button (Opens Modal) -->
+                <button type="button" class="btn btn-warning text-white" data-bs-toggle="modal" data-bs-target="#bookingModal">
+                    <i class="fas fa-calendar-check me-2"></i>Book Now
+                </button>
+
+                <a href="@Url.Action("ViewMessages", "Messages", new { propertyId = Model.Id })" class="btn btn-primary">
+                    <i class="fas fa-comments me-2"></i>Contact Owner
+                </a>
+            </div>
+
+            <!-- Booking Modal -->
+            <!-- Booking Modal (with Calendar) -->
+            <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form method="post" action="@Url.Action("BookPropertyRequest", "PropertyActions")">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="bookingModalLabel">Book Property</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <input type="hidden" name="propertyId" value="@Model.Id" />
+
+                                <div class="mb-3">
+                                    <label for="startDate" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" id="startDate" name="startDate" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="endDate" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" id="endDate" name="endDate" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="messageToOwner" class="form-label">Message to Owner (optional)</label>
+                                    <textarea class="form-control" name="messageToOwner" id="messageToOwner" rows="3" placeholder="Any special request?"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Submit Booking Request</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+    </main>
+
+    <footer class="text-center py-4">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 EthioHomes. All rights reserved</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize carousel
+        const carousel = new bootstrap.Carousel('#propertyCarousel', {
+            interval: 5000,
+            wrap: true
+        });
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

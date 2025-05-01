@@ -1,106 +1,226 @@
 ﻿@model EthioHomes.Models.Property
-<nav id="navbar" class="navbar navbar-expand-sm">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <h1 style="color: white;"><em>Ethio Homes</em></h1>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
-            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar-main">
-            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#services">Services</a>
-                </li>
 
-                <!-- Check if the user is logged in -->
-                @if (ViewBag.UserType != null)
-                {
-                    <!-- Display profile picture and menu options based on UserType -->
-                    @* <li class="nav-item"> *@
-                    @*     <a class="nav-link" href="#profile"> *@
-                    @*         <img src="path/to/profile-pic.jpg" alt="Profile Picture" class="rounded-circle" width="20" height="20"> *@
-                    @*     </a> *@
-                    @* </li> *@
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            Profile
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="/User/Profile">View Profile</a></li>
-                            <li><a class="dropdown-item" href="/User/Message">Messages</a></li>
-                            <li>
-                                <a asp-action="MySavedProperties" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MySavedProperties">Saved Properties</a>
-                            </li>
-                            <li>
-                                <a asp-action="MyBookings" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MyBookings">Bookings</a>
-                            </li>
-                            <!-- Conditional menu items based on UserType -->
-                            @if (ViewBag.UserType == "Owner")
-                            {
-                                <li><a class="dropdown-item" href="/Property/AddProperty">Add Property</a></li>
-                                <li><a class="dropdown-item" href="/Property/ViewMyListings">View My Listings</a></li>
-                            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Property - EthioHomes</title>
+    <style>
+        :root {
+            --color-primary: #2A2A2A;
+            --color-accent: #FF6B6B;
+            --color-light: #F4F4F4;
+            --color-dark: #1A1A1A;
+        }
 
-                            <li><a class="dropdown-item" href="/User/Logout">Log Out</a></li>
-                        </ul>
+        .edit-property {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+            input:focus, select:focus, textarea:focus {
+                border-color: var(--color-accent);
+                box-shadow: 0 0 8px rgba(255, 107, 107, 0.2);
+            }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background: #ff5252;
+                transform: translateY(-2px);
+            }
+
+        .btn-secondary {
+            background: #ddd;
+            color: var(--color-dark);
+        }
+
+        @@media (max-width: 768px) {
+            .edit-property {
+                padding: 1rem;
+                margin: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <!-- Include your existing header links -->
+</head>
+<body>
+    <!-- Include your existing navigation -->
+
+    <div class="container py-5">
+        <div class="edit-property">
+            <h2 class="text-center mb-5 display-5 fw-bold">Edit Property</h2>
+
+            <form asp-action="EditProperty" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-grid">
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label asp-for="Title">Property Title</label>
+                        <input type="text" asp-for="Title"
+                               value="@Model.Title"
+                               placeholder="Enter property title" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
-                }
-                else
-                {
-                    <!-- If the user is not logged in, show the login link -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/User/Login">Log in</a>
-                    </li>
-                }
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#testimonials">Testimonials</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#contact">Contact</a>
-                </li>
-            </ul>
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label asp-for="Location">Location</label>
+                        <input type="text" asp-for="Location"
+                               value="@Model.Location"
+                               placeholder="Enter property location" />
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="form-group">
+                        <label asp-for="Price">Price ($)</label>
+                        <input type="number" asp-for="Price"
+                               value="@Model.Price"
+                               step="0.01"
+                               placeholder="Enter price" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <!-- Property Type -->
+                    <div class="form-group">
+                        <label asp-for="PropertyType">Property Type</label>
+                        <select asp-for="PropertyType" class="form-select">
+                            <option value="Residential" selected="@(Model.PropertyType == "Residential")">Residential</option>
+                            <option value="Commercial" selected="@(Model.PropertyType == "Commercial")">Commercial</option>
+                        </select>
+                        <span asp-validation-for="PropertyType" class="text-danger"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group">
+                        <label asp-for="Status">Status</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="Available" selected="@(Model.Status == "Available")">Available</option>
+                            <option value="Sold" selected="@(Model.Status == "Sold")">Sold</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+
+                    <!-- Bedrooms -->
+                    <div class="form-group">
+                        <label asp-for="Bedrooms">Bedrooms</label>
+                        <input type="number" asp-for="Bedrooms"
+                               value="@Model.Bedrooms"
+                               placeholder="Number of bedrooms" />
+                        <span asp-validation-for="Bedrooms" class="text-danger"></span>
+                    </div>
+
+                    <!-- Bathrooms -->
+                    <div class="form-group">
+                        <label asp-for="Bathrooms">Bathrooms</label>
+                        <input type="number" asp-for="Bathrooms"
+                               value="@Model.Bathrooms"
+                               placeholder="Number of bathrooms" />
+                        <span asp-validation-for="Bathrooms" class="text-danger"></span>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group full">
+                        <label asp-for="Description">Description</label>
+                        <textarea asp-for="Description"
+                                  rows="5"
+                                  placeholder="Describe your property in detail">@Model.Description</textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                    <a href="@Url.Action("Details", "Property", new { id = Model.Id })"
+                       class="btn btn-secondary">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
-</nav>
-<h2>Edit Property</h2>
 
-<form asp-action="EditProperty" method="post">
-    <input type="hidden" asp-for="Id" />
-    <div>
-        <label>Title:</label>
-        <input type="text" name="Title" required />
+    <!-- Include your existing footer -->
+    <!-- Validation Scripts -->
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
 
-        <label>Location:</label>
-        <input type="text" name="Location" required />
+    <script>
+        // Initialize form validation
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
 
-        <label>Price:</label>
-        <input type="number" name="Price" step="0.01" required />
+            Array.from(forms)
+                .forEach(form => {
+                    form.addEventListener('submit', event => {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
 
-        <label>Property Type:</label>
-        <select name="PropertyType">
-            <option value="Residential">Residential</option>
-            <option value="Commercial">Commercial</option>
-        </select>
-
-        <label>Status:</label>
-        <select name="Status">
-            <option value="Available">Available</option>
-            <option value="Sold">Sold</option>
-        </select>
-
-        <label>Bedrooms:</label>
-        <input type="number" name="Bedrooms" required />
-
-        <label>Bathrooms:</label>
-        <input type="number" name="Bathrooms" required />
-
-        <label>Description:</label>
-        <textarea name="Description"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-</form>
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+</body>
+</html>

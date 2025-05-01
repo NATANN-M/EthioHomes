@@ -1,23 +1,203 @@
-﻿@model List<EthioHomes.Models.Property>
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@{
+    var userType = ViewBag.UserType;
 
-<h2>Your Conversations</h2>
+}
 
-@if (Model.Count > 0)
-{
-    <ul class="list-group">
-        @foreach (var property in Model)
-        {
-            <li class="list-group-item">
-                <h4>@property.Title</h4>
-                <a href="@Url.Action("ViewMessages", "Messages", new { propertyId = property.Id, receiverId = ViewBag.UserId })"
-                   class="btn btn-primary">
-                    View Messages
-                </a>
-            </li>
+@{
+    var loginSuccessMessage = TempData["LoginSuccess"] as string;
+    var showLogoutConfirm = TempData["ShowLogoutConfirm"] as bool? ?? false;
+}
+
+@model List<EthioHomes.Models.Property>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Custom CSS Files -->
+    <link rel="stylesheet" href="/css/responsive.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/styleNavigation.css" asp-append-version="true">
+
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Bootstrap (Local Copy) -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
+    <!-- Owl Carousel (Local Copy) -->
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            background-image: url(/images/Image.png);
+            background-position: center;
         }
-    </ul>
-}
-else
-{
-    <p>No conversations available.</p>
-}
+
+        .header {
+            padding: 20px;
+            text-align: center;
+            
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        .container1 {
+            width: 80%;
+            margin: 20px auto;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            backdrop-filter: blur(20px);
+        }
+
+        .welcome-message {
+            font-size: 1.1rem;
+            color: #fff;
+            text-align: center;
+        }
+
+        .conversation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .conversation-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .conversation-item:hover {
+            background:lightgray;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background: #007bff;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .conversation-content {
+            flex: 1;
+        }
+
+        .conversation-title {
+            font-size: 1.2rem;
+            color: #fff;
+            margin: 0 0 5px 0;
+        }
+
+        .conversation-preview {
+            font-size: 1rem;
+            color: #fff;
+            margin: 0 0 5px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 1rem;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+    </style>
+    <title>Your Conversations - Ethio Homes</title>
+</head>
+<body >
+
+    <nav id="navbar" class="navbar navbar-expand-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/Home/index">
+                <h1 style="color: white;"><em>Ethio Homes</em></h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
+                <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-main">
+                <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                    <li style="color: #fff;" class="nav-item">
+                        <a class="nav-link active" href="/Home/index#about">About</a>
+                    </li>
+                    <li style="color: #fff;" class="nav-item">
+                        <a class="nav-link" href="/Home/index#testimonials">Testimonials</a>
+                    </li>
+                    <li style="color: #fff;" class="nav-item">
+                        <a class="nav-link" href="/Home/index#Contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="header" >
+        <h1 style="margin-top: 3rem;">Your Conversations</h1>
+    </div>
+
+    <div class="container1">
+        <div class="welcome-message">
+            <p>Welcome! Here are your recent conversations. Click on any to view details.</p>
+        </div>
+
+        @if (Model.Count > 0)
+        {
+            <div class="conversation-list">
+                @foreach (var property in Model)
+                {
+                    <div class="conversation-item">
+                        <div class="avatar">
+                            @property.Title[0].ToString().ToUpper()
+                        </div>
+                        <div class="conversation-content">
+                            <h2 class="conversation-title">@property.Title</h2>
+                            <p class="conversation-preview">Click to view messages related to this property.</p>
+                        </div>
+                        <a href="@Url.Action("ViewMessages", "Messages", new { propertyId = property.Id, receiverId = ViewBag.UserId })"
+                            class="btn">
+                            View Messages
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No conversations available.</p>
+        }
+    </div>
+</body>
+
+</html>

@@ -40,48 +40,53 @@ namespace EthioHomes.Controllers
                     cmd.ExecuteNonQuery();
                 }
 
-                TempData["Success"] = "Property saved successfully.";
+              
                 return RedirectToAction("Details", "Property", new { id = propertyId });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in SaveProperty: {ex.Message}");
                 TempData["Error"] = "Unable to save property. Please try again.";
-                return RedirectToAction("Error", "Home");
+                return RedirectToAction("Login", "User");
             }
         }
 
-        // Book Property
         [HttpPost]
-        public IActionResult BookProperty(int propertyId)
+        public IActionResult BookPropertyRequest(int propertyId, DateTime startDate, DateTime endDate, string messageToOwner)
         {
-            try
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
             {
-                int userId = GetLoggedInUserId();
+                return RedirectToAction("Login", "User");
+            }
 
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-
-                    string query = @"INSERT INTO Bookings (UserId, PropertyId) 
-                                     VALUES (@UserId, @PropertyId)";
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@UserId", userId);
-                    cmd.Parameters.AddWithValue("@PropertyId", propertyId);
-
-                    cmd.ExecuteNonQuery();
-                }
-
-                TempData["Success"] = "Property booked successfully.";
+            if (endDate <= startDate)
+            {
+                TempData["Error"] = "End Date must be after Start Date.";
                 return RedirectToAction("Details", "Property", new { id = propertyId });
             }
-            catch (Exception ex)
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                Console.WriteLine($"Error in BookProperty: {ex.Message}");
-                TempData["Error"] = "Unable to book property. Please try again.";
-                return RedirectToAction("Error", "Home");
+                conn.Open();
+
+                string query = @"INSERT INTO Bookings (PropertyId, UserId, StartDate, EndDate, BookingDate, Status, MessageToOwner)
+                         VALUES (@PropertyId, @UserId, @StartDate, @EndDate, GETDATE(), Default, @MessageToOwner)";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@PropertyId", propertyId);
+                cmd.Parameters.AddWithValue("@UserId", userId.Value);
+                cmd.Parameters.AddWithValue("@StartDate", startDate);
+                cmd.Parameters.AddWithValue("@EndDate", endDate);
+                cmd.Parameters.AddWithValue("@MessageToOwner", messageToOwner ?? "");
+
+                cmd.ExecuteNonQuery();
             }
+
+            TempData["Success"] = "Booking request submitted successfully!";
+            return RedirectToAction("ViewMessages", "Messages", new { propertyId = propertyId });
         }
+
     }
 }
 

@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     color:white;
-    background-image:url('/images/image.png');
+    background-image:url('../images/image.png');
     
     
 }
@@ -72,7 +72,7 @@ max-width: 100%;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(109, 108, 108, 0.26);
     background-color:transparent;
-    background: url('image.png') ;
+    background: url('../image.png') ;
     
 }
 

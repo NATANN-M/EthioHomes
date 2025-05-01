@@ -17,18 +17,19 @@ namespace EthioHomes.Controllers
             }
             return userId.Value;
         }
-        public IActionResult ViewMessages(int propertyId, int receiverId = 0)
+        public IActionResult ViewMessages(int propertyId, int receiverId )
         {
             try
             {
                 int userId = GetLoggedInUserId();
 
                 List<Message> messages = new List<Message>();
+
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
 
-                    // Determine the receiver if not explicitly provided
+                    // if it is null
                     if (receiverId == 0)
                     {
                         string receiverQuery = @"
