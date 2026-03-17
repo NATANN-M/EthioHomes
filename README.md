@@ -10,7 +10,7 @@ EthioHomes is a full-stack web application that allows users to browse, book, an
 - 🏘️ Property listing with detailed info and images
 - 📅 Calendar-based booking system
 - ✅ Owner approval before booking confirmation
-- 💳 Payment integration (planned via Telebirr/Chapa)
+- 💳 Payment integration (via Telebirr/Chapa)
 - 📊 Admin dashboard for managing users and properties
 - 📥 Messaging system between users and property owners
 - 📁 Manual ADO.NET used for database interaction (no Entity Framework)
@@ -21,7 +21,7 @@ EthioHomes is a full-stack web application that allows users to browse, book, an
 
 | Frontend     | Backend    | Database     | Other Tools       |
 |--------------|------------|--------------|--------------------|
-| Bootstrap    | ASP.NET MVC (C#) | SQL Server   | ADO.NET, Chapa API (planned) |
+| Bootstrap    | ASP.NET MVC (C#) | SQL Server   | ADO.NET, Chapa  |
 
 ---
 
