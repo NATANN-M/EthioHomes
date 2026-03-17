@@ -10,12 +10,17 @@
     <link rel="stylesheet" href="~/css/styleNavigation.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 </head>
 <body>
     <nav id="navbar" class="navbar navbar-expand-sm">
         <div class="container">
             <a class="navbar-brand" href="/Home/index">
-                <h1 style="color: white;"><em>Ethio Homes</em></h1>
+                <h2 class="text-white fw-bold"><i class="fas fa-home me-2"></i>EthioHomes</h2>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
                 <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
@@ -37,6 +42,28 @@
     </nav>
 
 
+    @if (ViewBag.Success != null)
+    {
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">Login Successful</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>@ViewBag.Success</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
     <main>
         <section class="hero" style="margin-top: 5rem;">
             <h1>The perfect place for Rent And Sell Property</h1>
@@ -52,15 +79,22 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <input id="title" type="text" name="Title" required />
+                        <input id="title" type="text" name="Title" placeholder="Enter Title..." required />
                     </div>
-                    <div class="form-group">
-                        <label for="location">Location</label>
-                        <input id="location" type="text" name="Location" required />
+                    <div class="form-group d-flex align-items-center">
+                        <label for="location" class="me-2">Location</label>
+                        <input id="location" type="text" name="Location" placeholder="Enter Location Or Click icon to Enter using Map..." required class="flex-grow-1" />
+                        <input type="hidden" asp-for="Latitude" id="latitude" name="Latitude" />
+                        <input type="hidden" asp-for="Longitude" id="longitude" name="Longitude" />
+
+                        <button type="button" class="btn btn-outline-secondary ms-2" onclick="showMapModal()" title="Pick location on map">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </button>
                     </div>
+
                     <div class="form-group">
                         <label for="price">Price</label>
-                        <input id="price" type="number" name="Price" step="0.01" required />
+                        <input id="price" type="number"placeholder="Enter Price..."  name="Price" required />
                     </div>
                     <div class="form-group">
                         <label for="property-type">Property Type</label>
@@ -75,25 +109,25 @@
 
                         <select id="status" name="Status">
                             <option value="Available">Available</option>
-                            <option value="Sold">Sold</option>
+                            <option value="Unavailable">Unavailable</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="bedrooms">Bedrooms</label>
-                        <input id="bedrooms" type="number" name="Bedrooms" required />
+                        <input id="bedrooms" type="number" name="Bedrooms"placeholder="Enter Number of Beadrooms..."  required />
                     </div>
 
 
                     <div class="form-group">
                         <label for="bathrooms">Bathrooms</label>
-                        <input id="bathrooms" type="number" name="Bathrooms" required />
+                        <input id="bathrooms" type="number" name="Bathrooms" placeholder="Enter Number of Bathroom..." required />
                     </div>
 
 
                     <div class="form-group full">
                         <label for="description">Description</label>
-                        <textarea id="description" rows="5" name="Description"></textarea>
+                        <textarea id="description" rows="5" name="Description" placeholder="Enter Every Description Like Area in Sq. Status Like New or Old..."></textarea>
                     </div>
 
                     <div class="form-group full">
@@ -105,8 +139,8 @@
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button type="submit">Publish Listing</button>
-                    <button type="button" class="secondary">Cancel</button>
+                    <button type="submit" class="bg--accent">Publish Listing</button>
+                    <button type="button" class="secondary btn-[--accent]">Cancel</button>
                 </div>
             </form>
         </section>
@@ -119,5 +153,88 @@
             </div>
         </div>
     </footer>
+
+    <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mapModalLabel">Select Location</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="map" style="height: 350px; width: 100%;"></div>
+                    <button type="button"
+                            class="btn btn-primary mt-3 mb-2 w-100"
+                            style="background: linear-gradient(135deg, #28a745 0%, #218838 100%); border: none; color: #fff;"
+                            onclick="useCurrentLocation()">
+                        <i class="fas fa-location-arrow"></i> Use My Current Location
+                    </button>
+                    <i class="fas fa-location-arrow"></i> Use My Current Location
+                    </button>
+                    <span class="text-muted ms-2">or click/drag on the map to pin location</span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let map, marker, mapInitialized = false;
+
+        function showMapModal() {
+            var modal = new bootstrap.Modal(document.getElementById('mapModal'));
+            modal.show();
+
+            setTimeout(() => {
+                if (!mapInitialized) {
+                    initMap();
+                    mapInitialized = true;
+                } else {
+                    map.invalidateSize();
+                }
+            }, 400);
+        }
+
+               function initMap() {
+            let lat = parseFloat(document.getElementById('latitude').value) || 9.03;
+            let lng = parseFloat(document.getElementById('longitude').value) || 38.74;
+            map = L.map('map').setView([lat, lng], 12); // Zoom 12 for city view
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+            marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+            marker.on('dragend', function (e) {
+                updateCoordinates(marker.getLatLng());
+            });
+
+            map.on('click', function (e) {
+                marker.setLatLng(e.latlng);
+                updateCoordinates(e.latlng);
+            });
+
+            updateCoordinates(marker.getLatLng());
+        }
+
+
+        function updateCoordinates(latlng) {
+            document.getElementById('latitude').value = latlng.lat;
+            document.getElementById('longitude').value = latlng.lng;
+        }
+
+        function useCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const latlng = [pos.coords.latitude, pos.coords.longitude];
+                    marker.setLatLng(latlng);
+                    map.setView(latlng, 15);
+                    updateCoordinates({ lat: latlng[0], lng: latlng[1] });
+                });
+            }
+        }
+    </script>
+
+
 </body>
 </html>

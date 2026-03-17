@@ -11,10 +11,7 @@ namespace EthioHomes.Controllers
         private int GetLoggedInUserId()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
-            {
-                throw new UnauthorizedAccessException("User not logged in.");
-            }
+          
             return userId.Value;
         }
 
@@ -73,19 +70,16 @@ namespace EthioHomes.Controllers
         // View booked properties
         public IActionResult MyBookings()
         {
-            try
-            {
-                int userId = GetLoggedInUserId();
+            int userId = GetLoggedInUserId();
                 List<Booking> bookings = new List<Booking>();
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-
                     string query = @"SELECT b.*, p.Title, p.Location, p.Price, p.PropertyType
-                                     FROM Bookings b
-                                     JOIN Properties p ON b.PropertyId = p.Id
-                                     WHERE b.UserId = @UserId";
+                 FROM Bookings b
+                 JOIN Properties p ON b.PropertyId = p.Id
+                 WHERE b.UserId = @UserId";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@UserId", userId);
@@ -98,23 +92,86 @@ namespace EthioHomes.Controllers
                             Id = Convert.ToInt32(reader["Id"]),
                             PropertyId = Convert.ToInt32(reader["PropertyId"]),
                             BookingDate = Convert.ToDateTime(reader["BookingDate"]),
-                            Status = reader["Status"].ToString()
+                            Status = reader["Status"].ToString(),
+                            AgreementAccepted = reader["AgreementAccepted"] != DBNull.Value && Convert.ToBoolean(reader["AgreementAccepted"]),
+                            IsPaid = reader["IsPaid"] != DBNull.Value && Convert.ToBoolean(reader["IsPaid"])
+                            // Map other properties as needed
                         });
                     }
+
                 }
+            
 
                 return View(bookings);
-            }
-            catch (UnauthorizedAccessException)
+           
+        }
+
+        [HttpPost]
+        public IActionResult CancelBooking(int bookingId)
+        {
+            try
             {
-                return RedirectToAction("Login", "User");
+                int userId = GetLoggedInUserId();
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // 1. Delete related agreements first
+                    string deleteAgreements = "DELETE FROM Agreements WHERE BookingId = @BookingId";
+                    using (SqlCommand cmd = new SqlCommand(deleteAgreements, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@BookingId", bookingId);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 2. Then delete the booking (only if not paid)
+                    string deleteBooking = "DELETE FROM Bookings WHERE Id = @BookingId AND UserId = @UserId AND (IsPaid = 0 OR IsPaid IS NULL)";
+                    using (SqlCommand cmd = new SqlCommand(deleteBooking, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@BookingId", bookingId);
+                        cmd.Parameters.AddWithValue("@UserId", userId);
+                        int rows = cmd.ExecuteNonQuery();
+                        if (rows > 0)
+                            TempData["Success"] = "Booking cancelled successfully.";
+                        else
+                            TempData["Error"] = "Unable to cancel booking. It may already be paid or does not exist.";
+                    }
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in MyBookings: {ex.Message}");
-                TempData["Error"] = "Unable to load bookings. Please try again.";
-                return RedirectToAction("Error", "Home");
+                TempData["Error"] = "Error cancelling booking: " + ex.Message;
             }
+            return RedirectToAction("MyBookings");
         }
+
+
+        [HttpPost]
+        public IActionResult RemoveSavedProperty(int id)
+        {
+            try
+            {
+                int userId = GetLoggedInUserId();
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "DELETE FROM SavedProperties WHERE PropertyId = @PropertyId AND UserId = @UserId";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@PropertyId", id);
+                        cmd.Parameters.AddWithValue("@UserId", userId);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                TempData["Success"] = "Property removed from saved list.";
+            }
+            catch
+            {
+                TempData["Error"] = "Failed to remove property.";
+            }
+            return RedirectToAction("MySavedProperties");
+        }
+
+
     }
 }

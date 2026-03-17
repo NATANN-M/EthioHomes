@@ -41,46 +41,70 @@ public class UserController : Controller
         return RedirectToAction("Login");
     }
 
+    [HttpGet]
     public IActionResult Login()
     {
-        return View(); // Show login form
+        // Ensure no message is set on initial load
+        return View();
     }
 
     [HttpPost]
     public IActionResult Login(string email, string password)
     {
-        using (SqlConnection conn = new SqlConnection(connectionString))
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
-            conn.Open();
-
-            string query = "SELECT * FROM Users WHERE Email = @Email AND Password = @Password";
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@Email", email);
-            cmd.Parameters.AddWithValue("@Password", password);
-
-            SqlDataReader reader = cmd.ExecuteReader();
-        
-            if (reader.Read())
-            {
-                // Store user data in session
-                HttpContext.Session.SetInt32("UserId", Convert.ToInt32(reader["Id"]));
-                HttpContext.Session.SetString("UserType", reader["UserType"].ToString());
-                HttpContext.Session.SetString("userName", reader["Name"].ToString());
-                string userName = reader["Name"].ToString();
-              
-
-                // Redirect based on user type
-                if (reader["UserType"].ToString() == "Owner")
-                {
-                    ViewBag.useName = userName;
-                    return RedirectToAction("AddProperty", "Property", new {userName});
-                }
-
-                return RedirectToAction("Index", "Home", new {  userName });
-            }
+            ViewBag.Message1 = "Email and password are required.";
+            return View();
         }
 
-        ViewBag.Message = "Invalid email or password.";
+        try
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string query = "SELECT * FROM Users WHERE Email = @Email AND Password = @Password";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    cmd.Parameters.AddWithValue("@Password", password); // Replace with hashed password in production
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            // Store user data in session
+                            HttpContext.Session.SetInt32("UserId", Convert.ToInt32(reader["Id"]));
+                            HttpContext.Session.SetString("UserType", reader["UserType"].ToString());
+                            HttpContext.Session.SetString("userName", reader["Name"].ToString());
+                            string userName = reader["Name"].ToString();
+
+                            // Redirect based on user type
+                            int? userId = HttpContext.Session.GetInt32("UserId");
+                            if (reader["UserType"].ToString() == "Owner")
+                            {
+                                TempData["Success"] = $"Welcome back, {userName}!";
+
+
+                                return RedirectToAction("Index", "Home", new { userName });
+                            }
+                            TempData["Success"] = $"Welcome back, {userName}!";
+
+                            return RedirectToAction("Index", "Home", new { userName });
+                        }
+                    }
+                }
+            }
+
+            // If no user is found, set the error message
+            ViewBag.ErrorMessage = "Invalid email or password.";
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (not shown here for brevity)
+            ViewBag.ErrorMessage= "An error occurred while processing your request. Please try again.";
+        }
+
         return View();
     }
 

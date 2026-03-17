@@ -206,5 +206,29 @@ namespace EthioHomes.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult RemoveConversation(int propertyId)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+                return RedirectToAction("Login", "User");
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                // Remove all messages for this property and user
+                string deleteMessages = "DELETE FROM Messages WHERE PropertyId = @PropertyId AND (SenderId = @UserId OR ReceiverId = @UserId)";
+                using (SqlCommand cmd = new SqlCommand(deleteMessages, conn))
+                {
+                    cmd.Parameters.AddWithValue("@PropertyId", propertyId);
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            TempData["Success"] = "Conversation removed.";
+            return RedirectToAction("Conversations");
+        }
+
+
     }
 }

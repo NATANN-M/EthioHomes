@@ -17,7 +17,8 @@
 
     <title>EthioHomes - Home</title>
 
-
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 
     <!-- Custom CSS Files -->
@@ -39,66 +40,251 @@
     <!-- Owl Carousel (Local Copy) -->
     <link rel="stylesheet" href="/css/owl.carousel.min.css">
     <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+
+
+    <style>
+        :root {
+        --primary: #2563eb;
+        --secondary: #1e40af;
+        --accent: #10b981;
+        --light: #f8fafc;
+        --dark: #1e293b;
+        }
+
+        .navbar {
+        background: transparent;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 0.5rem 0;
+        position:sticky;
+        }
+
+        .navbar-brand h2 {
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover h2 {
+        transform: translateX(3px);
+        }
+
+        .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        position: relative;
+        margin: 0 1rem;
+        padding: 0.5rem 0 !important;
+        transition: all 0.3s ease;
+        }
+
+        .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent);
+        transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+        width: 100%;
+        }
+
+        .dropdown-menu {
+        background: rgba(26, 26, 26, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        border-radius: 8px;
+        margin-top: 0.5rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .dropdown-item {
+        color: rgba(255, 255, 255, 0.8);
+        padding: 0.75rem 1.5rem;
+        transition: all 0.2s ease;
+        position: relative;
+        }
+
+        .dropdown-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        padding-left: 2rem;
+        }
+
+        .dropdown-item::before {
+        content: '';
+        position: absolute;
+        left: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 0;
+        background: var(--accent);
+        transition: height 0.2s ease;
+        }
+
+        .dropdown-item:hover::before {
+        height: 60%;
+        }
+
+        .dropdown-divider {
+        border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-toggler {
+        border: none;
+        color: rgba(255, 255, 255, 0.8);
+        padding: 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+        box-shadow: none;
+        }
+
+        @@media (max-width: 991.98px) {
+        .navbar-collapse {
+        background: rgba(26, 26, 26, 0.98);
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: 8px;
+        backdrop-filter: blur(12px);
+        }
+
+        .dropdown-menu {
+        background: rgba(40, 40, 40, 0.98);
+        margin-left: 1rem;
+        width: calc(100% - 2rem);
+        }
+        }
+
+        /* User type indicator */
+        .user-type-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: var(--accent);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        }
+
+
+        .view-more-btn  {
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding: 0.75rem 2.5rem;
+            border-radius: 2rem;
+            background: linear-gradient(90deg, #2563eb 0%, #10b981 100%);
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+            border: none;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            letter-spacing: 1px;
+        }
+
+            .close-btn{
+            border-radius: 2rem;
+            background: linear-gradient(90deg, #2563eb 0%, #10b981 100%);
+            }
+
+            .view-more-btn:hover, .view-more-btn:focus {
+                background: linear-gradient(90deg, #10b981 0%, #2563eb 100%);
+                color: #fff !important;
+                box-shadow: 0 8px 24px rgba(16,185,129,0.18);
+                transform: translateY(-2px) scale(1.04);
+                text-decoration: none;
+            }
+
+    </style>
 </head>
 
 <body>
-    <nav id="navbar" class="navbar navbar-expand-sm">
+    <nav id="navbar" class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <h1 style="color: white;"><em>Ethio Homes</em></h1>
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white fw-bold"><i class="fas fa-home me-2 text-white"></i>EthioHomes</h2>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
                 <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
             </button>
             <div class="collapse navbar-collapse" id="navbar-main">
-                <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link active" href="#about">About</a>
                     </li>
 
-
-                    <!-- Check if the user is logged in -->
                     @if (ViewBag.UserType != null)
                     {
-                     
-                        <div class="dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Profile
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i>Profile
+                                @if (ViewBag.UserType != null)
+                                {
+                                    <span class="user-type-badge">@ViewBag.UserType</span>
+                                }
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <li><a class="dropdown-item" href="/Messages/Conversations" asp-controller="Messages"
-                                        asp-action="Conversations">Messages</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <a asp-action="MySavedProperties" asp-controller="UserProperties" class="dropdown-item"
-                                        href="/UserProperties/MySavedProperties">Saved Properties</a>
+                                    <a class="dropdown-item" href="/Messages/Conversations">
+                                        <i class="fas fa-comments me-2"></i>Messages
+                                    </a>
                                 </li>
                                 <li>
-                                    <a asp-action="MyBookings" asp-controller="UserProperties" class="dropdown-item"
-                                        href="/UserProperties/MyBookings">Bookings</a>
+                                    <a class="dropdown-item" href="/UserProperties/MySavedProperties">
+                                        <i class="fas fa-heart me-2"></i>Saved Properties
+                                    </a>
                                 </li>
-                                <!-- Conditional menu items based on UserType -->
+                                <li>
+                                    <a class="dropdown-item" href="/UserProperties/MyBookings">
+                                        <i class="fas fa-calendar-check me-2"></i>Bookings
+                                    </a>
+                                </li>
                                 @if (ViewBag.UserType == "Owner")
                                 {
-                                    <li><a class="dropdown-item" href="/Property/AddProperty">Add Property</a></li>
-                                    <li><a class="dropdown-item" href="/Property/ViewMyListings">View My Listings</a></li>
-
-                                   
-                                    
-                                        <li><a class="dropdown-item" href="@Url.Action("ManageBookings", "Booking")">Manage Bookings</a></li>
-                                    
-
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Property/AddProperty">
+                                            <i class="fas fa-plus-circle me-2"></i>Add Property
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Property/ViewMyListings">
+                                            <i class="fas fa-list me-2"></i>My Listings
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("ManageBookings", "Booking")">
+                                            <i class="fas fa-tasks me-2"></i>Manage Bookings
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("ManageRenters", "Owner")">
+                                            <i class="fas fa-users-cog me-2"></i>Manage Renters
+                                        </a>
+                                    </li>
                                 }
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Log Out
+                                    </a>
 
-                                <li><a class="dropdown-item" href="/User/Logout">Log Out</a></li>
+                                </li>
                             </ul>
-                        </div>
+                        </li>
                     }
                     else
                     {
-                        <!-- If the user is not logged in, show the login link -->
                         <li class="nav-item">
-                            <a class="nav-link" href="/User/Login">Log in</a>
+                            <a class="nav-link" href="/User/Login">
+                                <i class="fas fa-sign-in-alt me-1"></i>Log in
+                            </a>
                         </li>
                     }
 
@@ -113,6 +299,93 @@
         </div>
     </nav>
 
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to log out?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Cancel</button>
+                    <a href="/User/Logout" class="btn btn-danger">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Success Modal -->
+    @if (ViewBag.Success != null)
+    {
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">@ViewBag.Success</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>@ViewBag.Success</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary close-btn" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+
+    <!-- Owner Modal -->
+    @if (ViewBag.HasPendingRequests == true)
+    {
+        <div class="modal fade" id="ownerModal" tabindex="-1" aria-labelledby="ownerModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">Booking Request</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        You have pending booking requests to review.
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/Owner/BookingRequests" class="btn btn-primary">Review Now</a>
+                        <button type="button" class="btn btn-secondary close-btn" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Renter Modal -->
+    @if (ViewBag.HasApprovalNotification == true)
+    {
+        <div class="modal fade" id="renterModal" tabindex="-1" aria-labelledby="renterModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">Booking Approved</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Your booking has been approved! Please proceed to payment.
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/Renter/MyBookings" class="btn btn-success">View Booking</a>
+                        <button type="button" class="btn btn-secondary close-btn" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
 
 
@@ -121,10 +394,6 @@
 
 
 
-  
-              
-
-   
 
 
 
@@ -139,7 +408,10 @@
                 <div class="container">
                     <div class="caption">
                         <h1 class="caption-heading">The perfect place for your Needs</h1>
-                        <a  href="@Url.Action("index","PropertyListing")" class="btn btn-secondary">View more</a>
+                        <a href="@Url.Action("index","PropertyListing")"
+                           class="btn btn-secondary view-more-btn">
+                            View more
+                        </a>
                     </div>
                 </div>
             </div>
@@ -149,7 +421,9 @@
                     <div class="caption">
                         <h1 class="caption-heading">The perfect place for your Needs</h1>
                         <a href="@Url.Action("index","PropertyListing")"
-                         class="btn btn-secondary">View more</a>
+                           class="btn btn-secondary view-more-btn">
+                            View more
+                        </a>                        
                     </div>
                 </div>
             </div>
@@ -158,13 +432,19 @@
                 <div class="container">
                     <div class="caption">
                         <h1 class="caption-heading">The perfect place for your Needs</h1>
-                        <a href="@Url.Action("index","PropertyListing")"  class="btn btn-secondary">View more</a>
+                        <a href="@Url.Action("index","PropertyListing")"
+                           class="btn btn-secondary view-more-btn">
+                            View more
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="custom-nav owl-nav"></div>
     </section>
+
+
+
 
     <!-- WELCOME CONTENT -->
     <section id="about" class="about">
@@ -328,8 +608,8 @@
             <div class="owl-carousel owl-theme carousel-testimonials">
                 <div class="item testimonial">
                     <img class="transition rounded-3"
-                        src="https://lumenor.ai/cdn-cgi/imagedelivery/F5KOmplEz0rStV2qDKhYag/0e225278-0f5b-451e-506f-fadbc6dd5f00/tn"
-                        alt="testimonial detail">
+                    src="https://lumenor.ai/cdn-cgi/imagedelivery/F5KOmplEz0rStV2qDKhYag/0e225278-0f5b-451e-506f-fadbc6dd5f00/tn"
+                    alt="testimonial detail">
                     <div class="testimonial-content">
                         <p>Ethio Homes made finding our dream home effortless. The extensive listings and detailed
                             property descriptions helped us make an informed decision quickly. The secure online tools
@@ -340,8 +620,8 @@
                 </div>
                 <div class="item testimonial">
                     <img class="transition"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcJmeoMri_gtd3XW508-Ex4463AtmotzoUDA&s"
-                        alt="testimonial detail">
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcJmeoMri_gtd3XW508-Ex4463AtmotzoUDA&s"
+                    alt="testimonial detail">
                     <div class="testimonial-content">
                         <p>As a landlord, Ethio Homes has been a game-changer. Listing my property was easy, and I
                             received multiple inquiries within days. The digital contract feature streamlined the rental
@@ -353,8 +633,8 @@
                 </div>
                 <div class="item testimonial">
                     <img class="transition"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSej6k8rDiuFJwlyS6KBD-FC9rVC68mv7PtXA&s"
-                        alt="testimonial detail">
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSej6k8rDiuFJwlyS6KBD-FC9rVC68mv7PtXA&s"
+                    alt="testimonial detail">
                     <div class="testimonial-content">
                         <p>Using Ethio Homes to find a new office space was a breeze. The platform's user-friendly
                             interface allowed us to filter listings based on our exact requirements, and the online
@@ -406,48 +686,151 @@
         </div>
     </footer>
 
+    @if (ViewBag.ShowReminder == true)
+    {
+        <div id="reminderModal" class="modal show d-block" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Your stay is almost over!</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Would you like to book again?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <form method="post" action="@Url.Action("HandleReminderDecision", "Home")">
+
+                            <input type="hidden" name="bookingId" value="@ViewBag.BookingId" />
+                            <button type="submit" name="decision" value="BookAgain" class="btn btn-primary">Book Again</button>
+                            <button type="submit" name="decision" value="Later" class="btn btn-secondary">Later</button>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCancelModal">Cancel Booking</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cancel confirmation modal -->
+        <div id="confirmCancelModal" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="post" action="@Url.Action("HandleReminderDecision", "Home")">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Are you sure?</h5>
+                        </div>
+                        <div class="modal-body">
+                            <p>Do you really want to cancel this booking?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="bookingId" value="@ViewBag.BookingId" />
+                            <button type="submit" name="decision" value="Cancel" class="btn btn-danger">Yes, Cancel</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+    
+
+    <!-- Modal Notification -->
+    <div class="modal fade" id="notificationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Notification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    @if (ViewBag.UserType == "Owner")
+                    {
+                        <p>You have pending booking requests!</p>
+                    }
+                    else 
+                    {
+                        <p>Your booking request has been approved!</p>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Bootstrap JS -->
     <script src="~/js/bootstrap.bundle.min.js"></script>
 
+    
 
 
     <script src="/js/jquery.min.js"></script>
     <script src="/js/owl.carousel.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-            $(".owl-carousel").owlCarousel({
-                items: 1,
-                loop: true,
-                autoplay: true,
-                autoplayTimeout: 3000,
-                dots: true,
-                nav: true,
-                navText: ["<", ">"],
-                responsive: {
-                    0: {
-                        items: 1
-                    },
-                    600: {
-                        items: 1
-                    },
-                    1000: {
-                        items: 1
-                    }
-                }
-            });
 
-            // Add keyboard navigation
-            $(document).keydown(function (e) {
-                if (e.keyCode == 37) { // Left arrow key
-                    $(".owl-carousel").trigger('prev.owl.carousel');
-                } else if (e.keyCode == 39) { // Right arrow key
-                    $(".owl-carousel").trigger('next.owl.carousel');
-                }
-            });
+           document.addEventListener('DOMContentLoaded', function() {
+            // Convert C# boolean to JS boolean
+            const hasPending = @(ViewBag.HasPendingRequests.ToString().ToLower());
+            const hasApproval = @(ViewBag.HasApprovalNotification.ToString().ToLower());
+
+            console.log("Pending:", hasPending);
+            console.log("Approved:", hasApproval);
+
+            if (hasPending || hasApproval) {
+                new bootstrap.Modal(document.getElementById('notificationModal')).show();
+            }
         });
+
+
+
+        $(document).ready(function () {
+        $(".owl-carousel").owlCarousel({
+        items: 1,
+        loop: true,
+        autoplay: true,
+        autoplayTimeout: 3000,
+        dots: true,
+        nav: true,
+        navText: ["<", ">"],
+        responsive: {
+        0: {
+        items: 1
+        },
+        600: {
+        items: 1
+        },
+        1000: {
+        items: 1
+        }
+        }
+        });
+
+        // Add keyboard navigation
+        $(document).keydown(function (e) {
+        if (e.keyCode == 37) { // Left arrow key
+        $(".owl-carousel").trigger('prev.owl.carousel');
+        } else if (e.keyCode == 39) { // Right arrow key
+        $(".owl-carousel").trigger('next.owl.carousel');
+        }
+        });
+        });
+        
+
+       
+        // Show the modal if it exists
+        document.addEventListener("DOMContentLoaded", function () {
+            var successModal = document.getElementById('successModal');
+            if (successModal) {
+                var modal = new bootstrap.Modal(successModal);
+                modal.show();
+            }
+        });
+    
     </script>
 
 </body>
 
-</html>
+</html> 

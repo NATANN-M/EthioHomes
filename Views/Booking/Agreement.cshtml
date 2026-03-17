@@ -1,0 +1,294 @@
+﻿
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] EthioHomes </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #10b981;
+            --light: #f8fafc;
+            --dark: #1e293b;
+        }
+
+        body {
+            background: url(/images/Image.png) center/cover fixed;
+            backdrop-filter: blur(5px);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .navbar {
+            background: transparent !important;
+            backdrop-filter: blur(10px);
+        }
+
+        .agreement-container {
+            background: transparent;
+            backdrop-filter:blur(5px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
+
+        .agreement-header {
+            background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .agreement-card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .term-list li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.75rem;
+        }
+
+        .term-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.35em;
+            width: 0.5rem;
+            height: 0.5rem;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        .accept-button {
+            background:linear-gradient(90deg, #2563eb 0%, #10b981 100%);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .accept-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+        }
+
+        .back-button {
+            background: var(--color-light);
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--color-accent);
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        @@media (max-width: 768px) {
+            .agreement-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .agreement-card {
+                margin: 0 -1rem;
+                border-radius: 0;
+            }
+
+            .display-5 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <h2 class="text-white fw-bold">
+                    <i class="fas fa-home me-2 text-white"></i>EthioHomes
+                </h2>
+            </a>
+        </div>
+    </nav>
+
+    <main class="container py-5 mt-5">
+        <div class="agreement-container">
+            <h1 class="display-5 text-center mb-5 fw-bold text-white">Rental Booking Agreement</h1>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div>@TempData["Error"]</div>
+                </div>
+            }
+
+            <!-- Property Details Card -->
+            <div class="agreement-card card mb-4">
+                <div class="card-body p-4 p-lg-5">
+                    <h4 class="mb-4 fw-semibold text-primary"><i class="bi bi-house-door me-2"></i>Property Details</h4>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-building me-2 text-muted"></i>
+                                <div>
+                                    <h6 class="mb-0 text-secondary">Property Name</h6>
+                                    <p class="mb-0 fw-medium">@Model.PropertyTitle</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-geo-alt me-2 text-muted"></i>
+                                <div>
+                                    <h6 class="mb-0 text-secondary">Address</h6>
+                                    <p class="mb-0 fw-medium">@Model.Address</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-calendar-event me-2 text-muted"></i>
+                                <div>
+                                    <h6 class="mb-0 text-secondary">Booking Dates</h6>
+                                    <p class="mb-0 fw-medium">
+                                        @Model.StartDate.ToString("MMM dd, yyyy") - @Model.EndDate.ToString("MMM dd, yyyy")
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-cash-coin me-2 text-muted"></i>
+                                <div>
+                                    <h6 class="mb-0 text-secondary">Total Price</h6>
+                                    <p class="mb-0 fw-medium">@Model.Price.ToString("C")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Owner Details Card -->
+            <div class="agreement-card card mb-4">
+                <div class="card-body p-4 p-lg-5">
+                    <h4 class="mb-4 fw-semibold text-primary"><i class="bi bi-person-badge me-2"></i>Owner Details</h4>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-person-circle me-2 text-muted"></i>
+                                <div>
+                                    <h6 class="mb-0 text-secondary">Owner Name</h6>
+                                    <p class="mb-0 fw-medium">@Model.OwnerName</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-envelope me-2 text-muted"></i>
+                                <div>
+                                    <h6 class="mb-0 text-secondary">Contact Email</h6>
+                                    <p class="mb-0 fw-medium">@Model.OwnerEmail</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agreement Terms Card -->
+            <div class="agreement-card card mb-4">
+                <div class="card-body p-4 p-lg-5">
+                    <h4 class="mb-4 fw-semibold text-primary"><i class="bi bi-file-earmark-text me-2"></i>Agreement Terms</h4>
+                    <div class="mb-4">
+                        <p class="lead">This agreement between <span class="fw-semibold text-primary">@Model.UserName</span> (Renter) and <span class="fw-semibold text-primary">@Model.OwnerName</span> (Owner) includes:</p>
+                        <ul class="term-list list-unstyled">
+                            <li>Understanding and acceptance of rental dates and terms</li>
+                            <li>Commitment to maintain property condition</li>
+                            <li>Full responsibility for any damages</li>
+                            <li>Agreement to complete payment upon confirmation</li>
+                        </ul>
+                    </div>
+
+                    <form method="post" action="@Url.Action("SubmitAgreement", "Booking")">
+                        <input type="hidden" name="bookingId" value="@Model.BookingId" />
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" name="acceptTerms" id="acceptTerms" value="true" required>
+                            <label class="form-check-label" for="acceptTerms">
+                                I accept all terms and conditions
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" name="responsibility" id="responsibility" value="true" required>
+                            <label class="form-check-label" for="responsibility">
+                                I accept financial responsibility for damages
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn accept-button text-white">
+                                <i class="bi bi-credit-card me-2"></i>Confirm & Pay Now
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="alert alert-warning mt-4 d-flex align-items-center">
+                        <i class="bi bi-exclamation-octagon-fill me-2"></i>
+                        <div class="small">
+                            <strong>Binding Agreement:</strong> This becomes legally binding upon acceptance.
+                            Payment will be processed immediately after confirmation.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+                <a asp-controller="User" asp-action="Dashboard" class="btn back-button">
+                    <i class="bi bi-arrow-left me-2"></i>Return to Dashboard
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-4">
+        <div class="container">
+            <p class="mb-0 text-white">&copy; 2025 EthioHomes. All rights reserved</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            let allChecked = true;
+            
+            checkboxes.forEach(checkbox => {
+                if (!checkbox.checked) allChecked = false;
+            });
+
+            if (!allChecked) {
+                e.preventDefault();
+                alert('Please accept all required terms and conditions');
+            }
+        });
+    </script>
+</body>
+</html>

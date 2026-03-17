@@ -25,12 +25,45 @@
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/style_login.css" asp-append-version="true" />
     <title>Login</title>
+
+    <style>
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #10b981;
+            --light: #f8fafc;
+            --dark: #1e293b;
+        }
+
+        #login-btn, #learn-more {
+            font-size: 1.25rem;
+            font-weight: 700;
+           padding-left:2rm;
+           padding:2rm;
+            border-radius: 2rem;
+            background: linear-gradient(90deg, #2563eb 0%, #10b981 100%);
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+            border: none;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            letter-spacing: 1px;
+        }
+
+            #login-btn:hover, .login-btn:focus {
+                background: linear-gradient(90deg, #10b981 0%, #2563eb 100%);
+                color: #fff !important;
+                box-shadow: 0 8px 24px rgba(16,185,129,0.18);
+                transform: translateY(-2px) scale(1.04);
+                text-decoration: none;
+            }
+    </style>
 </head>
 
 <nav id="navbar" class="navbar navbar-expand-sm">
     <div class="container">
         <a class="navbar-brand" href="/Home/index">
-            <h1 style="color: white;"><em>Ethio Homes</em></h1>
+            <h2 class="text-white fw-bold"><i class="fas fa-home me-2"></i>EthioHomes</h2>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
             <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
@@ -88,8 +121,15 @@
         </div>
     </div>
 </nav>
-
+@if (!string.IsNullOrEmpty(ViewBag.Message1))
+{
+    <div style="width: 100%; margin-top: 30px; text-align: center;">
+        <h2 style="color: red;">@ViewBag.Message1</h2>
+    </div>
+}
 <body class="p-4">
+   
+  
     <div class="flex container-fluid container mt-5 rounded-4 py-5 text-white">
         <div class="left_flex mt-2 ms-5">
             <header><h1 class="text-center"></h1></header>
@@ -105,13 +145,13 @@
                         The Perfect Place to Find Your Dream Home. <br />
                     </h5>
                 </div>
-                <button class="btn btn-dark rounded-5 mt-2">Learn More</button>
+                <button class="btn btn-dark rounded-5 mt-2" id="learn-more">Learn More</button>
             </div>
         </div>
         <div class="right_flex w-40 mt-4">
             <div class="right_flex_text mt-2">
                 <form asp-action="Login" method="post" class="bd-filter px-5 py-3 rounded-5">
-                    <h1 class="text-center text-white">Sign in</h1>
+                    <h1 class="text-center text-white">Log in</h1>
                     <label class="form-label">Email</label>
                     <input type="email" name="Email" class="custom-email form-control rounded-4" required />
                     <br />
@@ -119,12 +159,12 @@
                     <input type="password" name="Password" class="custom-password form-control rounded-4" required />
                     <br />
                     <div class="text-center mt-4">
-                        <button class="custom-button btn btn-primary" type="submit">Login</button>
+                        <button class="btn btn-secondary view-more-btn" id="login-btn" type="submit">Login</button>
                     </div>
                 </form>
                 @if (ViewBag.ErrorMessage != null)
                 {
-                    <div class="alert alert-danger mt-3">
+                    <div class="alert alert-danger mt-4">
                         <p>@ViewBag.ErrorMessage</p>
                     </div>
                 }

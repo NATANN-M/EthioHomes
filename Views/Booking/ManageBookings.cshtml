@@ -1,52 +1,390 @@
 ﻿@model List<dynamic>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Booking Requests - EthioHomes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #10b981;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --text-light: #64748b;
+        }
 
-<h2>Booking Requests</h2>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: url(/images/Image.png) center/cover fixed;
+            backdrop-filter: blur(5px);
+           
+        }
+        /* Navigation Styles */
+        .navbar {
+            background: transparent !important;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+        }
 
-@if (Model.Count == 0)
-{
-    <p>No bookings found.</p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Property</th>
-                <th>Requested By</th>
-                <th>Stay Duration</th>
-                <th>Message</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var booking in Model)
-            {
-                <tr>
-                    <td>@booking.PropertyTitle</td>
-                    <td>@booking.UserName</td>
-                    <td>@booking.StartDate.ToShortDateString() - @booking.EndDate.ToShortDateString()</td>
-                    <td>@booking.MessageToOwner</td>
-                    <td>@booking.Status</td>
-                    <td>
-                        @if (booking.Status == "Pending")
-                        {
-                            <form method="post" asp-action="ApproveBooking" asp-controller="Booking">
-                                <input type="hidden" name="bookingId" value="@booking.Id" />
-                                <button class="btn btn-success btn-sm">Approve</button>
-                            </form>
-                            <form method="post" asp-action="RejectBooking" asp-controller="Booking">
-                                <input type="hidden" name="bookingId" value="@booking.Id" />
-                                <button class="btn btn-danger btn-sm">Reject</button>
-                            </form>
-                        }
-                        else
-                        {
-                            <span class="text-muted">@booking.Status</span>
-                        }
-                    </td>
-                </tr>
+        .navbar-brand h2 {
+            font-weight: 700;
+            color: white !important;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            position: relative;
+            margin: 0 1rem;
+            padding: 0.5rem 0 !important;
+            transition: all 0.3s ease;
+        }
+
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: var(--accent);
+                transition: width 0.3s ease;
             }
-        </tbody>
-    </table>
+
+            .nav-link:hover::after,
+            .nav-link.active::after {
+                width: 100%;
+            }
+
+        /* Main Content */
+        .container {
+           
+        }
+
+        .gradient-header {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .table-responsive {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+            .table thead th {
+                background: var(--primary);
+                color: white;
+                border-bottom: none;
+                padding: 1rem 1.5rem;
+            }
+
+            .table tbody td {
+                padding: 1.25rem 1.5rem;
+                vertical-align: middle;
+                border-color: #f1f3f5;
+            }
+
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.35rem 0.7rem;
+            border-radius: 20px;
+            text-transform: capitalize;
+        }
+
+        .message-cell {
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.3s ease;
+        }
+
+            .message-cell:hover {
+                white-space: normal;
+                overflow: visible;
+                background: white;
+                z-index: 2;
+                position: relative;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+        .action-buttons .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .action-buttons .btn-success {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .action-buttons .btn-danger {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .alert-info {
+            background: rgba(var(--primary), 0.05);
+            border: 2px dashed rgba(var(--primary), 0.1);
+            border-radius: 1rem;
+        }
+
+        @@media (max-width: 768px) {
+            .table-responsive {
+                border: 1px solid #f1f3f5;
+            }
+
+            .table thead {
+                display: none;
+            }
+
+            .table, .table tbody, .table tr, .table td {
+                display: block;
+                width: 100%;
+            }
+
+                .table tr {
+                    margin-bottom: 1rem;
+                    padding: 1rem;
+                    border-bottom: 2px solid #f1f3f5;
+                }
+
+                .table td {
+                    text-align: right;
+                    padding-left: 50%;
+                    position: relative;
+                    border-bottom: 1px solid #f1f3f5;
+                }
+
+                    .table td::before {
+                        content: attr(data-label);
+                        position: absolute;
+                        left: 1rem;
+                        width: calc(50% - 1rem);
+                        padding-right: 1rem;
+                        text-align: left;
+                        font-weight: 600;
+                        color: var(--primary);
+                    }
+
+            .action-buttons {
+                min-width: auto;
+                justify-content: flex-end !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white fw-bold"><i class="fas fa-home me-2"></i>EthioHomes</h2>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"><i class="fas fa-bars text-white"></i></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#about">About</a>
+                    </li>
+
+                    @if (ViewBag.UserType != null)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i>Profile
+                                @if (ViewBag.UserType != null)
+                                {
+                                    <span class="user-type-badge">@ViewBag.UserType</span>
+                                }
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="/Messages/Conversations">
+                                        <i class="fas fa-comments me-2"></i>Messages
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/UserProperties/MySavedProperties">
+                                        <i class="fas fa-heart me-2"></i>Saved Properties
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/UserProperties/MyBookings">
+                                        <i class="fas fa-calendar-check me-2"></i>Bookings
+                                    </a>
+                                </li>
+                                @if (ViewBag.UserType == "Owner")
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Property/AddProperty">
+                                            <i class="fas fa-plus-circle me-2"></i>Add Property
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Property/ViewMyListings">
+                                            <i class="fas fa-list me-2"></i>My Listings
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("ManageBookings", "Booking")">
+                                            <i class="fas fa-tasks me-2"></i>Manage Bookings
+                                        </a>
+                                    </li>
+                                }
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="/User/Logout">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Log Out
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/User/Login">
+                                <i class="fas fa-sign-in-alt me-1"></i>Log in
+                            </a>
+                        </li>
+                    }
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">Testimonials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <h2 class="display-5 text-center mb-5 text-white fw-bold">Booking Requests</h2>
+
+        @if (Model.Count == 0)
+        {
+            <div class="alert alert-info text-center py-4">
+                <i class="fas fa-inbox fa-3x mb-3"></i>
+                <h3 class="mt-3">No Booking Requests</h3>
+                <p class="text-muted">All booking requests will appear here</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Requested By</th>
+                            <th>Stay Duration</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var booking in Model)
+                        {
+                            <tr>
+                                <td data-label="Property">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-home me-2 text-primary"></i>
+                                        @booking.PropertyTitle
+                                    </div>
+                                </td>
+                                <td data-label="Requested By">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user me-2 text-primary"></i>
+                                        @booking.UserName
+                                    </div>
+                                </td>
+                                <td data-label="Stay Duration">
+                                    <div class="text-nowrap">
+                                        @booking.StartDate.ToString("MMM dd")<br>
+                                        <span class="text-muted">to</span><br>
+                                        @booking.EndDate.ToString("MMM dd, yyyy")
+                                    </div>
+                                </td>
+                                <td data-label="Message" class="message-cell">
+                                    @if (!string.IsNullOrEmpty(booking.MessageToOwner))
+                                    {
+                                        @booking.MessageToOwner
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No message</span>
+                                    }
+                                </td>
+                                <td data-label="Status">
+                                    <span class="badge status-badge bg-@GetStatusColor(booking.Status)">
+                                        @booking.Status
+                                    </span>
+                                </td>
+                                <td data-label="Actions" class="text-end action-buttons">
+                                    @if (booking.Status == "Pending")
+                                    {
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            <form method="post" action="@Url.Action("ApproveBooking", "Booking")" class="d-inline">
+                                                <input type="hidden" name="bookingId" value="@booking.Id" />
+                                                <button class="btn btn-success btn-sm px-3">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+                                            </form>
+                                            <form method="post" action="@Url.Action("RejectBooking", "Booking")" class="d-inline">
+                                                <input type="hidden" name="bookingId" value="@booking.Id" />
+                                                <button class="btn btn-danger btn-sm px-3">
+                                                    <i class="fas fa-times"></i> Reject
+                                                </button>
+                                            </form>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">@booking.Status</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+@functions {
+    string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "Approved" => "success",
+            "Rejected" => "danger",
+            "Pending" => "warning",
+            _ => "secondary"
+        };
+    }
 }

@@ -101,15 +101,73 @@ namespace EthioHomes.Controllers
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "DELETE FROM Properties WHERE Id = @Id AND OwnerId = @OwnerId";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Id", id);
-                cmd.Parameters.AddWithValue("@OwnerId", userId);
+                // 3. Check and delete from Agreements if any exist
+                string checkAgreementQuery = "SELECT COUNT(*) FROM Agreements WHERE BookingId IN (SELECT Id FROM Bookings WHERE PropertyId = @Id)";
+                using (SqlCommand checkAgreementCmd = new SqlCommand(checkAgreementQuery, conn))
+                {
+                    checkAgreementCmd.Parameters.AddWithValue("@Id", id);
+                    int agreementCount = (int)checkAgreementCmd.ExecuteScalar();
+                    if (agreementCount > 0)
+                    {
+                        string deleteAgreementQuery = "DELETE FROM Agreements WHERE BookingId IN (SELECT Id FROM Bookings WHERE PropertyId = @Id)";
+                        using (SqlCommand deleteAgreementCmd = new SqlCommand(deleteAgreementQuery, conn))
+                        {
+                            deleteAgreementCmd.Parameters.AddWithValue("@Id", id);
+                            deleteAgreementCmd.ExecuteNonQuery();
+                            Console.WriteLine($"Deleted {agreementCount} related agreements.");
+                        }
+                    }
+                }
 
-                int rowsAffected = cmd.ExecuteNonQuery();
+
+                // 1. Check and delete from Booking table if any exist
+                string checkBookingQuery = "SELECT COUNT(*) FROM Bookings WHERE PropertyId = @Id";
+                using (SqlCommand checkBookingCmd = new SqlCommand(checkBookingQuery, conn))
+                {
+                    checkBookingCmd.Parameters.AddWithValue("@Id", id);
+                    int bookingCount = (int)checkBookingCmd.ExecuteScalar();
+                    if (bookingCount > 0)
+                    {
+                        string deleteBookingQuery = "DELETE FROM Bookings WHERE PropertyId = @Id";
+                        using (SqlCommand deleteBookingCmd = new SqlCommand(deleteBookingQuery, conn))
+                        {
+                            deleteBookingCmd.Parameters.AddWithValue("@Id", id);
+                            deleteBookingCmd.ExecuteNonQuery();
+                            Console.WriteLine($"Deleted {bookingCount} related bookings.");
+                        }
+                    }
+                }
+
+                // 2. Check and delete from SavedProperties if any exist
+                string checkSavedQuery = "SELECT COUNT(*) FROM SavedProperties WHERE PropertyId = @Id";
+                using (SqlCommand checkSavedCmd = new SqlCommand(checkSavedQuery, conn))
+                {
+                    checkSavedCmd.Parameters.AddWithValue("@Id", id);
+                    int savedCount = (int)checkSavedCmd.ExecuteScalar();
+                    if (savedCount > 0)
+                    {
+                        string deleteSavedQuery = "DELETE FROM SavedProperties WHERE PropertyId = @Id";
+                        using (SqlCommand deleteSavedCmd = new SqlCommand(deleteSavedQuery, conn))
+                        {
+                            deleteSavedCmd.Parameters.AddWithValue("@Id", id);
+                            deleteSavedCmd.ExecuteNonQuery();
+                            Console.WriteLine($"Deleted {savedCount} saved references.");
+                        }
+                    }
+                }
+
                
-                
-                Console.WriteLine($"{rowsAffected} rows affected.");  //how many row affected after delete
+
+
+                // 4. Now safely delete the property itself
+                string deletePropertyQuery = "DELETE FROM Properties WHERE Id = @Id AND OwnerId = @OwnerId";
+                using (SqlCommand deletePropertyCmd = new SqlCommand(deletePropertyQuery, conn))
+                {
+                    deletePropertyCmd.Parameters.AddWithValue("@Id", id);
+                    deletePropertyCmd.Parameters.AddWithValue("@OwnerId", userId);
+                    int rowsAffected = deletePropertyCmd.ExecuteNonQuery();
+                    Console.WriteLine($"{rowsAffected} property deleted.");
+                }
             }
 
             return RedirectToAction("ViewMyListings", "Property");

@@ -1,12 +1,22 @@
 ﻿using EthioHomes.Models;
+using EthioHomes.services.EthioHomes.Services;
+using EthioHomes.services; // Include your EmailService namespace
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System;
 
 namespace EthioHomes.Controllers
 {
     public class PropertyActionsController : Controller
     {
         private readonly string connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=EthioHomesDB;Trusted_Connection=True;";
+        private readonly EmailService _emailService;
+
+        public PropertyActionsController(EmailService emailService)
+        {
+            _emailService = emailService;
+        }
 
         private int GetLoggedInUserId()
         {
@@ -15,11 +25,11 @@ namespace EthioHomes.Controllers
             {
                 throw new UnauthorizedAccessException("User not logged in.");
             }
-         
+
             return userId.Value;
         }
 
-        // Save Property
+        //  Save Property
         [HttpPost]
         public IActionResult SaveProperty(int propertyId)
         {
@@ -40,7 +50,6 @@ namespace EthioHomes.Controllers
                     cmd.ExecuteNonQuery();
                 }
 
-              
                 return RedirectToAction("Details", "Property", new { id = propertyId });
             }
             catch (Exception ex)
@@ -51,6 +60,7 @@ namespace EthioHomes.Controllers
             }
         }
 
+        //  Booking with Email Notification
         [HttpPost]
         public IActionResult BookPropertyRequest(int propertyId, DateTime startDate, DateTime endDate, string messageToOwner)
         {
@@ -66,27 +76,65 @@ namespace EthioHomes.Controllers
                 return RedirectToAction("Details", "Property", new { id = propertyId });
             }
 
+            string propertyName = "";
+            string ownerEmail = "";
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
-                string query = @"INSERT INTO Bookings (PropertyId, UserId, StartDate, EndDate, BookingDate, Status, MessageToOwner)
-                         VALUES (@PropertyId, @UserId, @StartDate, @EndDate, GETDATE(), Default, @MessageToOwner)";
+                //  Step 1: Fetch property name & owner's email
+                string infoQuery = @"SELECT P.Title, U.Email 
+                                     FROM Properties P
+                                     JOIN Users U ON P.OwnerId = U.Id
+                                     WHERE P.Id = @PropertyId";
 
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@PropertyId", propertyId);
-                cmd.Parameters.AddWithValue("@UserId", userId.Value);
-                cmd.Parameters.AddWithValue("@StartDate", startDate);
-                cmd.Parameters.AddWithValue("@EndDate", endDate);
-                cmd.Parameters.AddWithValue("@MessageToOwner", messageToOwner ?? "");
+                using (SqlCommand infoCmd = new SqlCommand(infoQuery, conn))
+                {
+                    infoCmd.Parameters.AddWithValue("@PropertyId", propertyId);
+                    using (SqlDataReader reader = infoCmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            propertyName = reader["Title"].ToString();
+                            ownerEmail = reader["Email"].ToString();
+                        }
+                    }
+                }
 
-                cmd.ExecuteNonQuery();
+                //  Step 2: Insert booking request
+                string insertQuery = @"INSERT INTO Bookings (PropertyId, UserId, StartDate, EndDate, BookingDate, Status, MessageToOwner)
+                                       VALUES (@PropertyId, @UserId, @StartDate, @EndDate, GETDATE(), Default, @MessageToOwner)";
+
+                using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@PropertyId", propertyId);
+                    cmd.Parameters.AddWithValue("@UserId", userId.Value);
+                    cmd.Parameters.AddWithValue("@StartDate", startDate);
+                    cmd.Parameters.AddWithValue("@EndDate", endDate);
+                    cmd.Parameters.AddWithValue("@MessageToOwner", messageToOwner ?? "");
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            //  Step 3: Send Email to Property Owner
+            if (!string.IsNullOrEmpty(ownerEmail))
+            {
+                string subject = $"New Booking Request for {propertyName}";
+                string body = $"Dear Property Owner,\n\n" +
+                              $"You have received a new booking request for your property: {propertyName}.\n\n" +
+                              $"Start Date: {startDate:yyyy-MM-dd}\n" +
+                              $"End Date: {endDate:yyyy-MM-dd}\n" +
+                              $"Message from renter: {messageToOwner ?? "No message."}\n\n" +
+                              $"Please log in to your EthioHomes dashboard to take action.\n\n" +
+                              $"Regards,\nEthioHomes Team";
+
+                _emailService.SendEmail(ownerEmail, subject, body);
             }
 
             TempData["Success"] = "Booking request submitted successfully!";
-            return RedirectToAction("ViewMessages", "Messages", new { propertyId = propertyId });
+            return RedirectToAction("Details", "Property", new { Id = propertyId });
         }
-
     }
 }
-

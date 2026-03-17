@@ -1,0 +1,199 @@
+﻿@model List<EthioHomes.Models.Booking>
+@{
+    ViewData["Title"] = "Manage Renters";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EthioHomes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #2A2A2A;
+            --color-accent: #FF6B6B;
+            --color-light: #F4F4F4;
+            --color-dark: #1A1A1A;
+        }
+
+        body {
+            background: url(/images/Image.png) center/cover fixed;
+            backdrop-filter: blur(5px);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        .management-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1400px;
+        }
+
+        .management-table {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+            .management-table thead {
+                background: var(--color-primary);
+                color: white;
+            }
+
+            .management-table th {
+                padding: 1rem;
+                font-weight: 500;
+            }
+
+            .management-table td {
+                vertical-align: middle;
+                padding: 1rem;
+            }
+
+            .management-table tr:hover {
+                background-color: rgba(0, 0, 0, 0.03);
+            }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .btn-table-action {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-table-action:hover {
+                transform: scale(1.05);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+        @@media (max-width: 768px) {
+            .management-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .management-table {
+                font-size: 0.9rem;
+            }
+
+                .management-table th,
+                .management-table td {
+                    padding: 0.75rem;
+                }
+
+                .management-table .d-none-mobile {
+                    display: none;
+                }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/Home/index">
+                <h2 class="text-white fw-bold"><i class="fas fa-home me-2"></i>EthioHomes</h2>
+            </a>
+        </div>
+    </nav>
+
+    <main class="container py-5 mt-5">
+        <div class="management-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0" style="color: var(--color-primary);">
+                    <i class="fas fa-users-cog me-2"></i>Manage Renters
+                </h2>
+                <a asp-controller="Owner" asp-action="Dashboard" href="/Home/index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+
+            <div class="table-responsive management-table">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Renter</th>
+                            <th>Property</th>
+                            <th class="d-none-mobile">Start Date</th>
+                            <th class="d-none-mobile">End Date</th>
+                            <th>Status</th>
+                            <th>Check-In</th>
+                            <th class="d-none-mobile">Checked In</th>
+                            <th class="d-none-mobile">Checked Out</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var booking in Model)
+                        {
+                            <tr>
+                                <td>@booking.RenterName</td>
+                                <td>@booking.PropertyName</td>
+                                <td class="d-none-mobile">@booking.StartDate.ToString("yyyy-MM-dd")</td>
+                                <td class="d-none-mobile">@booking.EndDate.ToString("yyyy-MM-dd")</td>
+                                <td>
+                                    <span class="status-badge @(booking.StayStatus == "Ended" ? "bg-danger" : "bg-success") text-white">
+                                        @booking.StayStatus
+                                    </span>
+                                </td>
+                                <td>@booking.CheckInStatus</td>
+                                <td class="d-none-mobile">@(booking.CheckedInAt?.ToString("g") ?? "-")</td>
+                                <td class="d-none-mobile">@(booking.CheckedOutAt?.ToString("g") ?? "-")</td>
+                                <td>
+                                    @if (booking.CheckInStatus != "CheckedIn")
+                                    {
+                                        <form action="@Url.Action("CheckIn", "Owner")" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@booking.Id" />
+                                            <button class="btn btn-table-action btn-primary" type="submit">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    else if (booking.CheckInStatus == "CheckedIn" && booking.CheckedOutAt == null)
+                                    {
+                                        <form action="@Url.Action("CheckOut", "Owner")" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@booking.Id" />
+                                            <button class="btn btn-table-action btn-warning" type="submit">
+                                                <i class="fas fa-sign-out-alt"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Completed</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-4 mt-auto">
+        <div class="container">
+            <p class="mb-0 text-white">&copy; 2025 EthioHomes. All rights reserved</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

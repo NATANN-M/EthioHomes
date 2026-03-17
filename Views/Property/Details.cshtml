@@ -1,49 +1,52 @@
 ﻿@model EthioHomes.Models.Property
-
+@using System.Globalization
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Styles -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Title - EthioHomes</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+
     <style>
         :root {
-            --color-primary: #2A2A2A;
-            --color-accent: #FF6B6B;
-            --color-light: #F4F4F4;
-            --color-dark: #1A1A1A;
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #10b981;
+            --light: #f8fafc;
+            --dark: #1e293b;
         }
 
         body {
-            background: #f8f9fa;
+            background: url(/images/Image.png) center/cover fixed;
+            backdrop-filter: blur(5px);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
 
         .navbar {
-            background: rgba(42, 42, 42, 0.95) !important;
+            background: rgba(255, 255, 255, 0.1) !important;
             backdrop-filter: blur(10px);
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         }
-
-        .btn-back {
-            background: var(--color-accent);
-            color: white;
-            border-radius: 25px;
-            padding: 8px 20px;
-            transition: all 0.3s ease;
-        }
-
-            .btn-back:hover {
-                transform: translateX(-5px);
-                background: #ff5252;
-            }
 
         .property-details {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             padding: 2rem;
-            margin-top: 2rem;
+            margin: 1rem auto;
+            max-width: 1200px;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
         }
 
         .carousel-inner {
@@ -52,36 +55,52 @@
         }
 
         .carousel-item img {
-            height: 400px;
+            height: 50vh;
+            min-height: 300px;
+            max-height: 500px;
             object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .detail-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
         }
 
         .property-features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+            gap: 1.5rem;
             padding: 1.5rem;
             background: var(--color-light);
             border-radius: 15px;
-            margin: 1.5rem 0;
+            margin: 2rem 0;
         }
 
-        .action-buttons .btn {
-            margin: 0.5rem;
-            padding: 12px 25px;
+        .btn-back {
+            background: var(--color-accent);
+            color: white;
             border-radius: 25px;
+            padding: 8px 20px;
             transition: all 0.3s ease;
+            position: sticky;
+            top: 20px;
+            z-index: 1000;
         }
 
-            .action-buttons .btn:hover {
-                transform: translateY(-2px);
+        .action-buttons {
+            position: sticky;
+            bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 15px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+            .action-buttons .btn {
+                padding: 12px 25px;
+                border-radius: 25px;
+                flex: 1 1 auto;
+                max-width: 250px;
             }
 
         footer {
@@ -91,35 +110,96 @@
             padding: 2rem 0;
         }
 
+        .modal {
+            backdrop-filter: blur(3px);
+        }
+
         @@media (max-width: 768px) {
-            .carousel-item img {
-                height: 300px;
+            .property-details {
+                margin: 0.5rem;
+                padding: 1rem;
+                max-height: calc(100vh - 100px);
             }
 
-            .action-buttons .btn {
-                width: 100%;
-                margin: 0.5rem 0;
+            .carousel-item img {
+                height: 40vh;
+                min-height: 250px;
+            }
+
+            .property-features {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                bottom: 10px;
+                padding: 0.5rem;
+            }
+
+            .btn-back {
+                top: 10px;
             }
         }
+
+
+
+
+        .map-btn, .save-btn, .book-btn, .contact-btn, .request-btn {
+            font-size: 2rem;
+            font-weight: 700;
+            padding-left: 2rem;
+            padding: 2rem;
+            border-radius: 2rem;
+            background: linear-gradient(90deg, #2563eb 0%, #10b981 100%);
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+            border: none;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            letter-spacing: 1px;
+        }
+
+            .map-btn:hover, .map-btn:focus {
+                background: linear-gradient(90deg, #10b981 0%, #2563eb 100%);
+                color: #fff !important;
+                box-shadow: 0 8px 24px rgba(16,185,129,0.18);
+                transform: translateY(-2px) scale(1.04);
+                text-decoration: none;
+            }
+    
+
     </style>
-
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">
                 <h2 class="text-white fw-bold"><i class="fas fa-home me-2"></i>EthioHomes</h2>
             </a>
-            <!-- ... keep existing navbar structure ... -->
+
         </div>
     </nav>
 
+      @if (ViewBag.Success != null)
+    {
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">@ViewBag.Success</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>@ViewBag.Success</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
     <main class="container py-4 mt-5">
         <button onclick="history.back()" class="btn btn-back">
             <i class="fas fa-arrow-left me-2"></i>Back
@@ -143,7 +223,6 @@
                                     </div>
                                 }
                             </div>
-                            <!-- Carousel Controls -->
                             <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
@@ -167,17 +246,21 @@
                 <div class="col-lg-5">
                     <div class="property-features">
                         <div class="text-center">
-                            <i class="fas fa-map-marker-alt text-primary"></i>
+                            <i class="fas fa-map-marker-alt text-primary fa-2x"></i>
                             <h5 class="mt-2">@Model.Location</h5>
                             <small class="text-muted">Location</small>
+                            <button type="button" class="btn btn-secondary map-btn" id="map-btn" data-bs-toggle="modal" data-bs-target="#mapModal">
+                                <i class="fas fa-map-marked-alt me-2"></i>Show on Map
+                            </button>
+
                         </div>
                         <div class="text-center">
-                            <i class="fas fa-tag text-primary"></i>
+                            <i class="fas fa-tag text-primary fa-2x"></i>
                             <h5 class="mt-2">$@Model.Price</h5>
                             <small class="text-muted">Price</small>
                         </div>
                         <div class="text-center">
-                            <i class="fas fa-home text-primary"></i>
+                            <i class="fas fa-home text-primary fa-2x"></i>
                             <h5 class="mt-2">@Model.PropertyType</h5>
                             <small class="text-muted">Type</small>
                         </div>
@@ -206,87 +289,179 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="action-buttons mt-5 text-center">
-                <form action="@Url.Action("SaveProperty", "PropertyActions")" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-success">
+            <div class="action-buttons">
+                <form action="@Url.Action("SaveProperty", "PropertyActions")" method="post" class="d-inline-flex">
+                    <input type="hidden" name="propertyId" value="@Model.Id" />
+                    <button type="submit" id="save-btn" class="btn btn-secondary save-btn">
                         <i class="fas fa-save me-2"></i>Save Property
                     </button>
                 </form>
+                @if (Model.PropertyType == "Residential")
+                {
 
-                <!-- Book Now Button (Opens Modal) -->
-                <button type="button" class="btn btn-warning text-white" data-bs-toggle="modal" data-bs-target="#bookingModal">
-                    <i class="fas fa-calendar-check me-2"></i>Book Now
+                    <button type="button" class="btn btn-secondary book-btn" id="book-btn" data-bs-toggle="modal" data-bs-target="#bookingModal">
+                        <i class="fas fa-calendar-check me-2"></i>Book Now
+                    </button>
+                }
+
+
+                <button type="button"
+                        class="btn btn-secondary contact-btn"
+                        onclick="location.href='@Url.Action("ViewMessages", "Messages", new { propertyId = Model.Id, receiverId = Model.OwnerId })'">
+                    <i class="fas fa-envelope"></i> Contact Owner
                 </button>
 
-                <a href="@Url.Action("ViewMessages", "Messages", new { propertyId = Model.Id })" class="btn btn-primary">
-                    <i class="fas fa-comments me-2"></i>Contact Owner
-                </a>
             </div>
+        </div>
 
-            <!-- Booking Modal -->
-            <!-- Booking Modal (with Calendar) -->
-            <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form method="post" action="@Url.Action("BookPropertyRequest", "PropertyActions")">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="bookingModalLabel">Book Property</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Booking Modal -->
+        <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form method="post" action="@Url.Action("BookPropertyRequest", "PropertyActions")">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="bookingModalLabel">Book Property</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="propertyId" value="@Model.Id" />
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="startDate" name="startDate" required>
                             </div>
-
-                            <div class="modal-body">
-                                <input type="hidden" name="propertyId" value="@Model.Id" />
-
-                                <div class="mb-3">
-                                    <label for="startDate" class="form-label">Start Date</label>
-                                    <input type="date" class="form-control" id="startDate" name="startDate" required />
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="endDate" class="form-label">End Date</label>
-                                    <input type="date" class="form-control" id="endDate" name="endDate" required />
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="messageToOwner" class="form-label">Message to Owner (optional)</label>
-                                    <textarea class="form-control" name="messageToOwner" id="messageToOwner" rows="3" placeholder="Any special request?"></textarea>
-                                </div>
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="endDate" name="endDate" required>
                             </div>
-
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-success">Submit Booking Request</button>
+                            <div class="mb-3">
+                                <label for="messageToOwner" class="form-label">Message to Owner (optional)</label>
+                                <textarea class="form-control" id="messageToOwner" name="messageToOwner" rows="3"></textarea>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary request-btn" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-secondary request-btn">Submit Request</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-
+        </div>
     </main>
 
-    <footer class="text-center py-4">
+    <footer class="text-center">
         <div class="container">
             <p class="mb-0">&copy; 2025 EthioHomes. All rights reserved</p>
         </div>
     </footer>
+    <div class="modal fade" id="mapModal" tabindex="-1"
+         aria-labelledby="mapModalLabel" aria-modal="true"
+         data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mapModalLabel">Property Location</h5>
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div id="propertyMap"
+                         style="height: 60vh; width: 100%;"
+                         role="application"
+                         aria-label="Property location map"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Scripts -->
     <script src="~/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        // Initialize carousel
+
+              document.addEventListener("DOMContentLoaded", function () {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("showBooking") === "true") {
+                const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
+                modal.show();
+            }
+        });
+
+
+
+
+           let map = null;
+
+        function initPropertyMap() {
+            // Ensure clean slate
+            if (map) {
+                map.remove();
+                map = null;
+            }
+
+            // Get coordinates
+            const lat = @(Model.Latitude.HasValue ? Model.Latitude.Value.ToString("F6", CultureInfo.InvariantCulture) : "9.03");
+            const lng = @(Model.Longitude.HasValue ? Model.Longitude.Value.ToString("F6", CultureInfo.InvariantCulture) : "38.74");
+            console.log(lng);
+              console.log(lat);
+            // Initialize map
+            map = L.map('propertyMap', {
+                center: [lat, lng],
+                zoom: 13,
+                preferCanvas: true
+            });
+
+            // Add tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+            // Add marker
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup('@Html.Raw(Model.Location)');
+
+            // Fix map sizing
+            setTimeout(() => map.invalidateSize({ pan: false }), 100);
+        }
+
+        // Modal handlers
+        const mapModal = document.getElementById('mapModal');
+        mapModal.addEventListener('shown.bs.modal', () => {
+            initPropertyMap();
+            mapModal.removeAttribute('aria-hidden'); // Fix accessibility issue
+        });
+
+        mapModal.addEventListener('hidden.bs.modal', () => {
+            if (map) {
+                map.remove();
+                map = null;
+            }
+            mapModal.setAttribute('aria-hidden', 'true');
+        });
+
+
+
+
+
+        // Initialize carousel with pause on hover
         const carousel = new bootstrap.Carousel('#propertyCarousel', {
-            interval: 5000,
+            interval: 3000,
             wrap: true
         });
 
-        // Add smooth scroll behavior
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
+        // Auto-close modal after form submit
+        document.querySelector('#bookingModal form').addEventListener('submit', function() {
+            bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
         });
+
+        // Adjust container height on resize
+        window.addEventListener('resize', () => {
+            const container = document.querySelector('.property-details');
+            container.style.maxHeight = `calc(100vh - 140px)`;
+        });
+
+              
+      
+   
+
+
     </script>
 </body>
 </html>

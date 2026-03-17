@@ -1,3 +1,5 @@
+using EthioHomes.services.EthioHomes.Services;
+using EthioHomes.Services;
 using Microsoft.AspNetCore.Session;
 
 namespace EthioHomes
@@ -11,6 +13,10 @@ namespace EthioHomes
             // Add services to the container
             ConfigureServices(builder.Services);
 
+            builder.Configuration.AddJsonFile("appsettings.json");
+
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline
@@ -23,6 +29,12 @@ namespace EthioHomes
         {
             // Add controllers with views
             services.AddControllersWithViews();
+
+            services.AddTransient<EmailService>();  //adding email service /Registering it
+
+            services.AddHostedService<RentalReminderService>();   //reminder for renter to pay on time
+
+
 
             // Add session services
             services.AddDistributedMemoryCache(); // In-memory cache for session data
