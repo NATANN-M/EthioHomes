@@ -1,39 +1,381 @@
 ﻿@model EthioHomes.Models.Property
 
-<h2>Edit Property</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Property - EthioHomes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #10b981;
+            --accent: #10b981;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --text-light: #64748b;
+        }
 
-<form asp-action="EditProperty" method="post">
-    <input type="hidden" asp-for="Id" />
-    <div>
-        <label>Title:</label>
-        <input type="text" name="Title" required />
+        body {
+            
+            background: url(/images/Image.png) ;
+            backdrop-filter: blur(5px);
+            margin:0;
+            box-sizing:0;
+            height:100vh;
+            
+        }
 
-        <label>Location:</label>
-        <input type="text" name="Location" required />
+        /* Navigation Styles */
+        .navbar {
+            background: transparent !important;
+            backdrop-filter: blur(12px);
+            position:sticky;
+            top:0;
+            
+        }
 
-        <label>Price:</label>
-        <input type="number" name="Price" step="0.01" required />
+        .navbar-brand h2 {
+            font-weight: 700;
+            color: white !important;
+            transition: transform 0.3s ease;
+        }
 
-        <label>Property Type:</label>
-        <select name="PropertyType">
-            <option value="Residential">Residential</option>
-            <option value="Commercial">Commercial</option>
-        </select>
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            position: relative;
+            margin: 0 1rem;
+            padding: 0.5rem 0 !important;
+            transition: all 0.3s ease;
+        }
 
-        <label>Status:</label>
-        <select name="Status">
-            <option value="Available">Available</option>
-            <option value="Sold">Sold</option>
-        </select>
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: var(--accent);
+                transition: width 0.3s ease;
+            }
 
-        <label>Bedrooms:</label>
-        <input type="number" name="Bedrooms" required />
+            .nav-link:hover::after,
+            .nav-link.active::after {
+                width: 100%;
+            }
 
-        <label>Bathrooms:</label>
-        <input type="number" name="Bathrooms" required />
+        /* Edit Property Form */
+        .edit-property-container {
+            margin-top: 80px;
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            background:transparent;
+        }
 
-        <label>Description:</label>
-        <textarea name="Description"></textarea>
+        .edit-property-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+            input:focus, select:focus, textarea:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(var(--primary), 0.1);
+                outline: none;
+            }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn-save {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+            .btn-save:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(var(--primary), 0.15);
+            }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: var(--dark);
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+            .btn-cancel:hover {
+                background: #cbd5e1;
+            }
+
+        .text-danger {
+            color: #ef4444 !important;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        @@media (max-width: 768px) {
+            .edit-property-container {
+                padding: 1rem;
+            }
+
+            .edit-property-card {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-save, .btn-cancel {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <h2 class="text-white fw-bold"><i class="fas fa-home me-2"></i>EthioHomes</h2>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"><i class="fas fa-bars text-white"></i></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#about">About</a>
+                    </li>
+
+                    @if (ViewBag.UserType != null)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i>Profile
+                                @if (ViewBag.UserType != null)
+                                {
+                                    <span class="user-type-badge">@ViewBag.UserType</span>
+                                }
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="/Messages/Conversations">
+                                        <i class="fas fa-comments me-2"></i>Messages
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/UserProperties/MySavedProperties">
+                                        <i class="fas fa-heart me-2"></i>Saved Properties
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/UserProperties/MyBookings">
+                                        <i class="fas fa-calendar-check me-2"></i>Bookings
+                                    </a>
+                                </li>
+                                @if (ViewBag.UserType == "Owner")
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Property/AddProperty">
+                                            <i class="fas fa-plus-circle me-2"></i>Add Property
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Property/ViewMyListings">
+                                            <i class="fas fa-list me-2"></i>My Listings
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("ManageBookings", "Booking")">
+                                            <i class="fas fa-tasks me-2"></i>Manage Bookings
+                                        </a>
+                                    </li>
+                                }
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="/User/Logout">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Log Out
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/User/Login">
+                                <i class="fas fa-sign-in-alt me-1"></i>Log in
+                            </a>
+                        </li>
+                    }
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">Testimonials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Edit Property Content -->
+    <div class="edit-property-container">
+        <div class="edit-property-card">
+            <h2 class="form-title">Edit Property</h2>
+            <form asp-action="EditProperty" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-grid">
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label asp-for="Title">Property Title</label>
+                        <input type="text" asp-for="Title" name="Title" value="@Model.Title" required />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label asp-for="Location">Location</label>
+                        <input type="text" asp-for="Location" name="Location" value="@Model.Location" />
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="form-group">
+                        <label asp-for="Price">Price (ETB)</label>
+                        <input type="number" asp-for="Price" name="Price" value="@Model.Price" step="0.01" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <!-- Property Type -->
+                    <div class="form-group">
+                        <label asp-for="PropertyType">Property Type</label>
+                        <select asp-for="PropertyType" name="PropertyType" class="form-select">
+                            <option value="Residential" name="Residential" selected="@(Model.PropertyType == "Residential")">Residential</option>
+                            <option value="Commercial" name="Commercial" selected="@(Model.PropertyType == "Commercial")">Commercial</option>
+                        </select>
+                        <span asp-validation-for="PropertyType" class="text-danger"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group">
+                        <label asp-for="Status">Status</label>
+                        <select asp-for="Status" name="Status" class="form-select">
+                            <option value="Available" name="Available" selected="@(Model.Status == "Available")">Available</option>
+                            <option value="Sold" name="Sold" selected="@(Model.Status == "Sold")">Sold</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+
+                    <!-- Bedrooms -->
+                    <div class="form-group">
+                        <label asp-for="Bedrooms">Bedrooms</label>
+                        <input type="number" asp-for="Bedrooms" name="Bedrooms" value="@Model.Bedrooms" />
+                        <span asp-validation-for="Bedrooms" class="text-danger"></span>
+                    </div>
+
+                    <!-- Bathrooms -->
+                    <div class="form-group">
+                        <label asp-for="Bathrooms">Bathrooms</label>
+                        <input type="number" name="Bathrooms" name="Bathrooms" asp-for="Bathrooms" value="@Model.Bathrooms" />
+                        <span asp-validation-for="Bathrooms" class="text-danger"></span>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group" style="grid-column: 1 / -1">
+                        <label asp-for="Description">Description</label>
+                        <textarea asp-for="Description" name="Description" rows="5">@Model.Description</textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a href="@Url.Action("Details", "Property", new { id = Model.Id })" class="btn-cancel">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-</form>
+
+    <!-- Scripts -->
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+</body>
+</html>

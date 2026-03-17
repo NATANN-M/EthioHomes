@@ -12,14 +12,14 @@ namespace EthioHomes.Controllers
         // Show Add Property form
         public IActionResult AddProperty()
         {
-            //int? userId = HttpContext.Session.GetInt32("UserId");
-            //string userType = HttpContext.Session.GetString("UserType");
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            string userType = HttpContext.Session.GetString("UserType");
 
-            //// Check if the user is logged in and is an owner
-            //if (userId == null || userType != "Owner")
-            //{
-            //    return RedirectToAction("index", "User");
-            //}
+            // Check if the user is logged in and is an owner
+            if (userId == null || userType != "Owner")
+            {
+                return RedirectToAction("index", "User");
+            }
 
             return View();
         }
@@ -45,9 +45,11 @@ namespace EthioHomes.Controllers
 
                 // Insert property details
                 string insertPropertyQuery = @"INSERT INTO Properties 
-            (Title, Location, Price, PropertyType, Status, Bedrooms, Bathrooms, Description, OwnerId)
-            VALUES (@Title, @Location, @Price, @PropertyType, @Status, @Bedrooms, @Bathrooms, @Description, @OwnerId);
-            SELECT CAST(SCOPE_IDENTITY() AS INT);";
+    (Title, Location, Price, PropertyType, Status, Bedrooms, Bathrooms, Description, OwnerId, Latitude, Longitude)
+    VALUES (@Title, @Location, @Price, @PropertyType, @Status, @Bedrooms, @Bathrooms, @Description, @OwnerId, @Latitude, @Longitude);
+    SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
+
 
                 SqlCommand cmd = new SqlCommand(insertPropertyQuery, conn);
                 cmd.Parameters.AddWithValue("@Title", property.Title);
@@ -59,6 +61,10 @@ namespace EthioHomes.Controllers
                 cmd.Parameters.AddWithValue("@Bathrooms", property.Bathrooms);
                 cmd.Parameters.AddWithValue("@Description", property.Description);
                 cmd.Parameters.AddWithValue("@OwnerId", property.OwnerId);
+                cmd.Parameters.AddWithValue("@Latitude", (object?)property.Latitude ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Longitude", (object?)property.Longitude ?? DBNull.Value);
+
+
 
                 int propertyId = Convert.ToInt32(cmd.ExecuteScalar()); // Get  inserted property ID
 
@@ -95,6 +101,7 @@ namespace EthioHomes.Controllers
         }
 
         ///////////********* FOR Detail page "clicking the Details or View more  button" *************///////  ///////
+        [Route("Property/Details/{id}")]
         public IActionResult Details(int id)
         {
             Property property = null;
@@ -121,7 +128,11 @@ namespace EthioHomes.Controllers
                         Status = reader["Status"].ToString(),
                         Bedrooms = Convert.ToInt32(reader["Bedrooms"]),
                         Bathrooms = Convert.ToInt32(reader["Bathrooms"]),
-                        Description = reader["Description"].ToString()
+                        Description = reader["Description"].ToString(),
+                        OwnerId = Convert.ToInt32(reader["OwnerId"]),
+                        Latitude = reader["Latitude"] != DBNull.Value ? Convert.ToDouble(reader["Latitude"]) : (double?)null,
+                        Longitude = reader["Longitude"] != DBNull.Value ? Convert.ToDouble(reader["Longitude"]) : (double?)null
+
                     };
                 }
                 reader.Close();
@@ -148,6 +159,8 @@ namespace EthioHomes.Controllers
 
             return property != null ? View(property) : NotFound();
         }
+
+   
 
 
 

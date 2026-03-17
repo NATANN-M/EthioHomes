@@ -1,0 +1,212 @@
+﻿@* @model List<EthioHomes.Models.Booking> *@
+
+@* <!DOCTYPE html> *@
+@* <html lang="en"> *@
+@* <head> *@
+@*     <meta charset="UTF-8"> *@
+@*     <meta name="viewport" content="width=device-width, initial-scale=1.0"> *@
+@*     <title>Your Bookings - Ethio Homes</title> *@
+@*     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> *@
+@*     <link rel="stylesheet" href="~/css/bootstrap.min.css"> *@
+@*     <style> *@
+@*         :root { *@
+@*             --primary: #2563eb; *@
+@*             --secondary: #1e40af; *@
+@*             --accent: #10b981; *@
+@*             --light: #f8fafc; *@
+@*             --dark: #1e293b; *@
+@*         } *@
+
+@*         /* Navigation Styles */ *@
+@*         .navbar { *@
+@*             background: rgba(26, 26, 26, 0.95) !important; *@
+@*             backdrop-filter: blur(12px); *@
+@*             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); *@
+@*             padding: 0.5rem 0; *@
+@*         } *@
+
+@*         .navbar-brand h2 { *@
+@*             font-weight: 700; *@
+@*             color: white !important; *@
+@*             transition: transform 0.3s ease; *@
+@*         } *@
+
+@*         .nav-link { *@
+@*             color: rgba(255, 255, 255, 0.9) !important; *@
+@*             position: relative; *@
+@*             margin: 0 1rem; *@
+@*             padding: 0.5rem 0 !important; *@
+@*             transition: all 0.3s ease; *@
+@*         } *@
+
+@*             .nav-link::after { *@
+@*                 content: ''; *@
+@*                 position: absolute; *@
+@*                 bottom: -2px; *@
+@*                 left: 0; *@
+@*                 width: 0; *@
+@*                 height: 2px; *@
+@*                 background: var(--accent); *@
+@*                 transition: width 0.3s ease; *@
+@*             } *@
+
+@*             .nav-link:hover::after, *@
+@*             .nav-link.active::after { *@
+@*                 width: 100%; *@
+@*             } *@
+
+@*         .dropdown-menu { *@
+@*             background: rgba(26, 26, 26, 0.98); *@
+@*             border: 1px solid rgba(255, 255, 255, 0.1); *@
+@*             backdrop-filter: blur(12px); *@
+@*             border-radius: 8px; *@
+@*             margin-top: 0.5rem; *@
+@*             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); *@
+@*         } *@
+
+@*         /* Booking List Styles */ *@
+@*         .bookings-container { *@
+@*             margin-top: 80px; *@
+@*             padding: 2rem 1rem; *@
+@*             max-width: 1200px; *@
+@*             margin-left: auto; *@
+@*             margin-right: auto; *@
+@*         } *@
+
+@*         .page-title { *@
+@*             font-size: 2.5rem; *@
+@*             color: var(--dark); *@
+@*             margin-bottom: 2rem; *@
+@*             text-align: center; *@
+@*         } *@
+
+@*         .empty-state { *@
+@*             text-align: center; *@
+@*             padding: 3rem; *@
+@*             background: rgba(var(--primary), 0.05); *@
+@*             border-radius: 1rem; *@
+@*             border: 2px dashed rgba(var(--primary), 0.1); *@
+@*         } *@
+
+@*         /* ... (Keep all the previous booking card styles from earlier answer) ... */ *@
+
+@*     </style> *@
+@* </head> *@
+@* <body> *@
+@*     <!-- Navigation Bar --> *@
+@*     <nav class="navbar navbar-expand-lg fixed-top"> *@
+@*         <div class="container"> *@
+@*             <a class="navbar-brand" href="/"> *@
+@*                 <h2 class="text-white fw-bold"><i class="fas fa-home me-2"></i>EthioHomes</h2> *@
+@*             </a> *@
+@*             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"> *@
+@*                 <span class="navbar-toggler-icon"><i class="fas fa-bars text-white"></i></span> *@
+@*             </button> *@
+@*             <div class="collapse navbar-collapse" id="navbarMain"> *@
+@*                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0"> *@
+@*                     <li class="nav-item"> *@
+@*                         <a class="nav-link active" href="#about">About</a> *@
+@*                     </li> *@
+
+@*                     @if (ViewBag.UserType != null) *@
+@*                     { *@
+@*                         <li class="nav-item dropdown"> *@
+@*                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"> *@
+@*                                 <i class="fas fa-user-circle me-1"></i>Profile *@
+@*                                 @if (ViewBag.UserType != null) *@
+@*                                 { *@
+@*                                     <span class="user-type-badge">@ViewBag.UserType</span> *@
+@*                                 } *@
+@*                             </a> *@
+@*                             <ul class="dropdown-menu dropdown-menu-end"> *@
+@*                                 <li> *@
+@*                                     <a class="dropdown-item" href="/Messages/Conversations"> *@
+@*                                         <i class="fas fa-comments me-2"></i>Messages *@
+@*                                     </a> *@
+@*                                 </li> *@
+@*                                 <li> *@
+@*                                     <a class="dropdown-item" href="/UserProperties/MySavedProperties"> *@
+@*                                         <i class="fas fa-heart me-2"></i>Saved Properties *@
+@*                                     </a> *@
+@*                                 </li> *@
+@*                                 <li> *@
+@*                                     <a class="dropdown-item" href="/UserProperties/MyBookings"> *@
+@*                                         <i class="fas fa-calendar-check me-2"></i>Bookings *@
+@*                                     </a> *@
+@*                                 </li> *@
+@*                                 @if (ViewBag.UserType == "Owner") *@
+@*                                 { *@
+@*                                     <li><hr class="dropdown-divider"></li> *@
+@*                                     <li> *@
+@*                                         <a class="dropdown-item" href="/Property/AddProperty"> *@
+@*                                             <i class="fas fa-plus-circle me-2"></i>Add Property *@
+@*                                         </a> *@
+@*                                     </li> *@
+@*                                     <li> *@
+@*                                         <a class="dropdown-item" href="/Property/ViewMyListings"> *@
+@*                                             <i class="fas fa-list me-2"></i>My Listings *@
+@*                                         </a> *@
+@*                                     </li> *@
+@*                                     <li> *@
+@*                                         <a class="dropdown-item" href="@Url.Action("ManageBookings", "Booking")"> *@
+@*                                             <i class="fas fa-tasks me-2"></i>Manage Bookings *@
+@*                                         </a> *@
+@*                                     </li> *@
+@*                                 } *@
+@*                                 <li><hr class="dropdown-divider"></li> *@
+@*                                 <li> *@
+@*                                     <a class="dropdown-item text-danger" href="/User/Logout"> *@
+@*                                         <i class="fas fa-sign-out-alt me-2"></i>Log Out *@
+@*                                     </a> *@
+@*                                 </li> *@
+@*                             </ul> *@
+@*                         </li> *@
+@*                     } *@
+@*                     else *@
+@*                     { *@
+@*                         <li class="nav-item"> *@
+@*                             <a class="nav-link" href="/User/Login"> *@
+@*                                 <i class="fas fa-sign-in-alt me-1"></i>Log in *@
+@*                             </a> *@
+@*                         </li> *@
+@*                     } *@
+
+@*                     <li class="nav-item"> *@
+@*                         <a class="nav-link" href="#testimonials">Testimonials</a> *@
+@*                     </li> *@
+@*                     <li class="nav-item"> *@
+@*                         <a class="nav-link" href="#contact">Contact</a> *@
+@*                     </li> *@
+@*                 </ul> *@
+@*             </div> *@
+@*         </div> *@
+@*     </nav> *@
+
+@*     <!-- Booking List Content --> *@
+@*     <div class="bookings-container"> *@
+@*         <!-- Keep the booking list content from previous answer --> *@
+@*         <h2 class="page-title">Your Bookings</h2> *@
+@*         @if (!Model.Any()) *@
+@*         { *@
+@*             <div class="empty-state"> *@
+@*                 <i class="fas fa-calendar-times fa-3x"></i> *@
+@*                 <h3>No Active Bookings</h3> *@
+@*                 <p>Your upcoming bookings will appear here once you make a reservation.</p> *@
+@*             </div> *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             <div class="booking-list"> *@
+@*                 <!-- Booking cards here --> *@
+@*                 @foreach (var booking in Model) *@
+@*                 { *@
+@*                     <!-- Booking card HTML from previous answer --> *@
+@*                 } *@
+@*             </div> *@
+@*         } *@
+@*     </div> *@
+
+@*     <!-- Scripts --> *@
+@*     <script src="~/js/bootstrap.bundle.min.js"></script> *@
+@* </body> *@
+@* </html> *@

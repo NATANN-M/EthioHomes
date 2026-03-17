@@ -5,6 +5,12 @@
         public int Id { get; set; }
         public string Title { get; set; }
         public string Location { get; set; }
+
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+
+
+
         public decimal Price { get; set; }
         public string PropertyType { get; set; }
         public string Status { get; set; }
@@ -16,5 +22,7 @@
         // List of associated image paths
         public List<PropertyImage> Images { get; set; } = new List<PropertyImage>();
         public List<string> ImagePaths { get; set; }
+
+        public User user { get; set; }
     }
 }

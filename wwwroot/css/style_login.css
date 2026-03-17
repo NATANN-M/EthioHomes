@@ -1,10 +1,6 @@
-body{
-    background-image: url('/images/slide3.jpg');
-    background: center;
-}
-.flex {
+.flex{
     display: flex;
-    background: url('/images/slide3.jpg');
+    background: url('..images/slide3.jpg');
 }
 .left_flex{
     width: 70%;

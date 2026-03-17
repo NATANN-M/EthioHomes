@@ -2,59 +2,169 @@
     ViewData["Title"] = "Login";
 }
 
-@model EthioHomes.Models.User
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <!-- Custom CSS Files -->
+    <link rel="stylesheet" href="~/css/styleNavigation.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/colors.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true">
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <link rel="stylesheet" href="~/css/style.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Bootstrap (Local Copy) -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
+    
+
+    <!-- Owl Carousel (Local Copy) -->
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/style_login.css" asp-append-version="true" />
     <title>Login</title>
+
+    <style>
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --accent: #10b981;
+            --light: #f8fafc;
+            --dark: #1e293b;
+        }
+
+        #login-btn, #learn-more {
+            font-size: 1.25rem;
+            font-weight: 700;
+           padding-left:2rm;
+           padding:2rm;
+            border-radius: 2rem;
+            background: linear-gradient(90deg, #2563eb 0%, #10b981 100%);
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+            border: none;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            letter-spacing: 1px;
+        }
+
+            #login-btn:hover, .login-btn:focus {
+                background: linear-gradient(90deg, #10b981 0%, #2563eb 100%);
+                color: #fff !important;
+                box-shadow: 0 8px 24px rgba(16,185,129,0.18);
+                transform: translateY(-2px) scale(1.04);
+                text-decoration: none;
+            }
+    </style>
 </head>
+
+<nav id="navbar" class="navbar navbar-expand-sm">
+    <div class="container">
+        <a class="navbar-brand" href="/Home/index">
+            <h2 class="text-white fw-bold"><i class="fas fa-home me-2"></i>EthioHomes</h2>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-main">
+            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-main">
+            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/Home/index#about">About</a>
+                </li>
+                
+
+                <!-- Check if the user is logged in -->
+                @if (ViewBag.UserType != null)
+                {
+
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                            Profile
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" href="/User/Profile">View Profile</a></li>
+                            <li><a class="dropdown-item" href="/User/Message">Messages</a></li>
+                            <li>
+                                <a asp-action="MySavedProperties" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MySavedProperties">Saved Properties</a>
+                            </li>
+                            <li>
+                                <a asp-action="MyBookings" asp-controller="UserProperties" class="dropdown-item" href="/UserProperties/MyBookings">Bookings</a>
+                            </li>
+                            <!-- Conditional menu items based on UserType -->
+                            @if (ViewBag.UserType == "Owner")
+                            {
+                                <li><a class="dropdown-item" href="/Property/AddProperty">Add Property</a></li>
+                                <li><a class="dropdown-item" href="/Property/ViewMyListings">View My Listings</a></li>
+                            }
+
+                            <li><a class="dropdown-item" href="/User/Logout">Log Out</a></li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <!-- If the user is not logged in, show the login link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/User/Login">Log in</a>
+                    </li>
+                }
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/Home/index#testimonials">Testimonials</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Home/index#Contact">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+@if (!string.IsNullOrEmpty(ViewBag.Message1))
+{
+    <div style="width: 100%; margin-top: 30px; text-align: center;">
+        <h2 style="color: red;">@ViewBag.Message1</h2>
+    </div>
+}
 <body class="p-4">
+   
+  
     <div class="flex container-fluid container mt-5 rounded-4 py-5 text-white">
         <div class="left_flex mt-2 ms-5">
-            <header><h1 class="text-center">Ethio Homes</h1></header>
+            <header><h1 class="text-center"></h1></header>
             <hr />
             <div class="left_flex_text">
                 <h1 class="mb-3">Login <br /></h1>
                 <h6 class="mb-3">
-                    Don't Have an Account? <a href="User/SignUp.cshtml">Sign up</a>
+                    Don't Have an Account? <a asp-controller="User" asp-action="User" href="@Url.Action("SignUp","User")">Sign up</a>
                 </h6>
                 <hr class="rounded-4" />
                 <div class="w-75 mb-4">
                     <h5>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-                        in consequatur quis optio deserunt totam, sint voluptatum iusto?
+                        The Perfect Place to Find Your Dream Home. <br />
                     </h5>
                 </div>
-                <button class="btn btn-dark rounded-5 mt-2">Learn More</button>
+                <button class="btn btn-dark rounded-5 mt-2" id="learn-more">Learn More</button>
             </div>
         </div>
         <div class="right_flex w-40 mt-4">
             <div class="right_flex_text mt-2">
-                <!-- Login form -->
-                <form asp-action="Login" method="POST" class="bd-filter px-5 py-3 rounded-5">
-                    <h1 class="text-center text-white">Sign in</h1>
+                <form asp-action="Login" method="post" class="bd-filter px-5 py-3 rounded-5">
+                    <h1 class="text-center text-white">Log in</h1>
                     <label class="form-label">Email</label>
-                    <input type="email" name="email" class="custom-email form-control rounded-4" required />
+                    <input type="email" name="Email" class="custom-email form-control rounded-4" required />
                     <br />
                     <label class="form-label">Password</label>
-                    <input type="password" name="password" class="custom-password form-control rounded-4" required />
+                    <input type="password" name="Password" class="custom-password form-control rounded-4" required />
                     <br />
                     <div class="text-center mt-4">
-                        <button class="custom-button btn btn-primary" type="submit">Login</button>
+                        <button class="btn btn-secondary view-more-btn" id="login-btn" type="submit">Login</button>
                     </div>
                 </form>
-
-                <!-- Error message if login fails -->
                 @if (ViewBag.ErrorMessage != null)
                 {
-                    <div class="alert alert-danger mt-3">
+                    <div class="alert alert-danger mt-4">
                         <p>@ViewBag.ErrorMessage</p>
                     </div>
                 }
@@ -62,7 +172,12 @@
         </div>
     </div>
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    @* <script src="~/js/script2.js"></script> *@
+    <!-- Bootstrap JS -->
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
 </body>
 </html>
